@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CombineFeedback",
+        "repositoryURL": "https://github.com/sergdort/CombineFeedback",
+        "state": {
+          "branch": "master",
+          "revision": "14a17fae5ec0a2f11c356dc2c71fcc1844819627",
+          "version": null
+        }
+      },
+      {
+        "package": "PureLayout",
+        "repositoryURL": "https://github.com/PureLayout/PureLayout",
+        "state": {
+          "branch": null,
+          "revision": "d19b40e831e4d621097765998be97df3856e8413",
+          "version": "3.1.6"
+        }
+      },
+      {
+        "package": "swift-case-paths",
+        "repositoryURL": "https://github.com/pointfreeco/swift-case-paths.git",
+        "state": {
+          "branch": null,
+          "revision": "ed1838ab4fa5d47db8aa640736dd5b7672548873",
+          "version": "0.1.2"
+        }
+      },
+      {
+        "package": "VideoPlayer",
+        "repositoryURL": "https://github.com/gymbro/videoplayer",
+        "state": {
+          "branch": "master",
+          "revision": "763a13e3a36c7952fc831f2faf60b11d9017bc46",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
