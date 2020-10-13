@@ -25,7 +25,7 @@ final class VideoEditor: VideoEditorProtocol {
 
     func apply(edit: VideoEdit, to asset: AVAsset) -> AnyPublisher<AVAsset, VideoEditorError> {
         Future { promise in
-            let composition = AVMutableComposition()
+            let composition = AVMutableVideoComposition()
             guard let compositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid),
                   let track = asset.tracks(withMediaType: .video).first else {
                 print("Failed to apply video edit \(self)")
@@ -52,6 +52,7 @@ final class VideoEditor: VideoEditorProtocol {
                 promise(.failure(VideoEditorError.unknown))
             }
 
+            composition.renderSize = CGSize(width: 100, height: 100)
             promise(.success(composition))
         }.eraseToAnyPublisher()
     }
