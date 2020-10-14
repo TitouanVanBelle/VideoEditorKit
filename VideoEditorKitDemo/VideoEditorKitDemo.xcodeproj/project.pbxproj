@@ -7,31 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5905AEE9251E5981004E403F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5905AEE8251E5981004E403F /* AppDelegate.swift */; };
-		5905AEEB251E5981004E403F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5905AEEA251E5981004E403F /* SceneDelegate.swift */; };
-		5905AEED251E5981004E403F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5905AEEC251E5981004E403F /* ViewController.swift */; };
-		5905AF0B251E5A2C004E403F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5905AF02251E5A2C004E403F /* Assets.xcassets */; };
-		5905AF0C251E5A2C004E403F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5905AF03251E5A2C004E403F /* LaunchScreen.storyboard */; };
-		5905AF0D251E5A2C004E403F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5905AF05251E5A2C004E403F /* Main.storyboard */; };
-		5905AF0E251E5A2C004E403F /* Surf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5905AF08251E5A2C004E403F /* Surf.mp4 */; };
-		5905AF0F251E5A2C004E403F /* Ski.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5905AF09251E5A2C004E403F /* Ski.mp4 */; };
-		5905AF10251E5A2C004E403F /* Skate.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5905AF0A251E5A2C004E403F /* Skate.mp4 */; };
 		5905AF14251E5A50004E403F /* VideoEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 5905AF13251E5A50004E403F /* VideoEditor */; };
+		59A6FA632536EB5100C542BF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0BFF2536E52A000390AB /* AppDelegate.swift */; };
+		59A6FA652536EB5400C542BF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0C012536E52A000390AB /* SceneDelegate.swift */; };
+		59A6FA672536EB5600C542BF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0BF42536E52A000390AB /* ViewController.swift */; };
+		59A6FA6B2536EB8100C542BF /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 59A6FA6A2536EB8100C542BF /* PureLayout */; };
+		59A6FA6E2536EBA900C542BF /* VideoEditorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 59A6FA6D2536EBA900C542BF /* VideoEditorKit */; };
+		59A6FA702536ECBF00C542BF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BF72536E52A000390AB /* LaunchScreen.storyboard */; };
+		59A6FA712536ECBF00C542BF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BF92536E52A000390AB /* Main.storyboard */; };
+		59A6FA732536ECC300C542BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BF62536E52A000390AB /* Assets.xcassets */; };
+		59A6FA752536ECD100C542BF /* Ski.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BFD2536E52A000390AB /* Ski.mp4 */; };
+		59A6FA762536ECD100C542BF /* Skate.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BFE2536E52A000390AB /* Skate.mp4 */; };
+		59A6FA772536ECD100C542BF /* Surf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BFC2536E52A000390AB /* Surf.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5905AEE5251E5981004E403F /* VideoEditorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoEditorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5905AEE8251E5981004E403F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5905AEEA251E5981004E403F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		5905AEEC251E5981004E403F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		5905AEF6251E5982004E403F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5905AEFD251E598B004E403F /* VideoEditor */ = {isa = PBXFileReference; lastKnownFileType = folder; name = VideoEditor; path = ..; sourceTree = "<group>"; };
-		5905AF02251E5A2C004E403F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		5905AF04251E5A2C004E403F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		5905AF06251E5A2C004E403F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		5905AF08251E5A2C004E403F /* Surf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Surf.mp4; sourceTree = "<group>"; };
-		5905AF09251E5A2C004E403F /* Ski.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ski.mp4; sourceTree = "<group>"; };
-		5905AF0A251E5A2C004E403F /* Skate.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Skate.mp4; sourceTree = "<group>"; };
+		5905AEE5251E5981004E403F /* VideoEditorKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoEditorKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		59BC0BF42536E52A000390AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		59BC0BF62536E52A000390AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		59BC0BF82536E52A000390AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		59BC0BFA2536E52A000390AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		59BC0BFC2536E52A000390AB /* Surf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Surf.mp4; sourceTree = "<group>"; };
+		59BC0BFD2536E52A000390AB /* Ski.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ski.mp4; sourceTree = "<group>"; };
+		59BC0BFE2536E52A000390AB /* Skate.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Skate.mp4; sourceTree = "<group>"; };
+		59BC0BFF2536E52A000390AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		59BC0C002536E52A000390AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		59BC0C012536E52A000390AB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		59EE03932536E58F00EEAA43 /* VideoEditorKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = VideoEditorKit; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +41,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59A6FA6B2536EB8100C542BF /* PureLayout in Frameworks */,
 				5905AF14251E5A50004E403F /* VideoEditor in Frameworks */,
+				59A6FA6E2536EBA900C542BF /* VideoEditorKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,8 +53,8 @@
 		5905AEDC251E5981004E403F = {
 			isa = PBXGroup;
 			children = (
-				5905AEFD251E598B004E403F /* VideoEditor */,
-				5905AEE7251E5981004E403F /* VideoEditorDemo */,
+				59EE03932536E58F00EEAA43 /* VideoEditorKit */,
+				59BC0BF32536E52A000390AB /* VideoEditorKitDemo */,
 				5905AEE6251E5981004E403F /* Products */,
 				5905AF12251E5A50004E403F /* Frameworks */,
 			);
@@ -59,42 +63,9 @@
 		5905AEE6251E5981004E403F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5905AEE5251E5981004E403F /* VideoEditorDemo.app */,
+				5905AEE5251E5981004E403F /* VideoEditorKitDemo.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		5905AEE7251E5981004E403F /* VideoEditorDemo */ = {
-			isa = PBXGroup;
-			children = (
-				5905AF01251E5A2C004E403F /* Resources */,
-				5905AEE8251E5981004E403F /* AppDelegate.swift */,
-				5905AEEA251E5981004E403F /* SceneDelegate.swift */,
-				5905AEEC251E5981004E403F /* ViewController.swift */,
-				5905AEF6251E5982004E403F /* Info.plist */,
-			);
-			path = VideoEditorDemo;
-			sourceTree = "<group>";
-		};
-		5905AF01251E5A2C004E403F /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				5905AF02251E5A2C004E403F /* Assets.xcassets */,
-				5905AF03251E5A2C004E403F /* LaunchScreen.storyboard */,
-				5905AF05251E5A2C004E403F /* Main.storyboard */,
-				5905AF07251E5A2C004E403F /* Videos */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		5905AF07251E5A2C004E403F /* Videos */ = {
-			isa = PBXGroup;
-			children = (
-				5905AF08251E5A2C004E403F /* Surf.mp4 */,
-				5905AF09251E5A2C004E403F /* Ski.mp4 */,
-				5905AF0A251E5A2C004E403F /* Skate.mp4 */,
-			);
-			path = Videos;
 			sourceTree = "<group>";
 		};
 		5905AF12251E5A50004E403F /* Frameworks */ = {
@@ -104,12 +75,45 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		59BC0BF32536E52A000390AB /* VideoEditorKitDemo */ = {
+			isa = PBXGroup;
+			children = (
+				59BC0BFF2536E52A000390AB /* AppDelegate.swift */,
+				59BC0C012536E52A000390AB /* SceneDelegate.swift */,
+				59BC0BF42536E52A000390AB /* ViewController.swift */,
+				59BC0BF52536E52A000390AB /* Resources */,
+				59BC0C002536E52A000390AB /* Info.plist */,
+			);
+			path = VideoEditorKitDemo;
+			sourceTree = "<group>";
+		};
+		59BC0BF52536E52A000390AB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				59BC0BF62536E52A000390AB /* Assets.xcassets */,
+				59BC0BF72536E52A000390AB /* LaunchScreen.storyboard */,
+				59BC0BF92536E52A000390AB /* Main.storyboard */,
+				59BC0BFB2536E52A000390AB /* Videos */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		59BC0BFB2536E52A000390AB /* Videos */ = {
+			isa = PBXGroup;
+			children = (
+				59BC0BFC2536E52A000390AB /* Surf.mp4 */,
+				59BC0BFD2536E52A000390AB /* Ski.mp4 */,
+				59BC0BFE2536E52A000390AB /* Skate.mp4 */,
+			);
+			path = Videos;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5905AEE4251E5981004E403F /* VideoEditorDemo */ = {
+		5905AEE4251E5981004E403F /* VideoEditorKitDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5905AEF9251E5983004E403F /* Build configuration list for PBXNativeTarget "VideoEditorDemo" */;
+			buildConfigurationList = 5905AEF9251E5983004E403F /* Build configuration list for PBXNativeTarget "VideoEditorKitDemo" */;
 			buildPhases = (
 				5905AEE1251E5981004E403F /* Sources */,
 				5905AEE2251E5981004E403F /* Frameworks */,
@@ -119,12 +123,14 @@
 			);
 			dependencies = (
 			);
-			name = VideoEditorDemo;
+			name = VideoEditorKitDemo;
 			packageProductDependencies = (
 				5905AF13251E5A50004E403F /* VideoEditor */,
+				59A6FA6A2536EB8100C542BF /* PureLayout */,
+				59A6FA6D2536EBA900C542BF /* VideoEditorKit */,
 			);
 			productName = VideoEditorDemo;
-			productReference = 5905AEE5251E5981004E403F /* VideoEditorDemo.app */;
+			productReference = 5905AEE5251E5981004E403F /* VideoEditorKitDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -141,7 +147,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5905AEE0251E5981004E403F /* Build configuration list for PBXProject "VideoEditorDemo" */;
+			buildConfigurationList = 5905AEE0251E5981004E403F /* Build configuration list for PBXProject "VideoEditorKitDemo" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -150,11 +156,14 @@
 				Base,
 			);
 			mainGroup = 5905AEDC251E5981004E403F;
+			packageReferences = (
+				59A6FA692536EB8100C542BF /* XCRemoteSwiftPackageReference "PureLayout" */,
+			);
 			productRefGroup = 5905AEE6251E5981004E403F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5905AEE4251E5981004E403F /* VideoEditorDemo */,
+				5905AEE4251E5981004E403F /* VideoEditorKitDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -164,12 +173,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5905AF0D251E5A2C004E403F /* Main.storyboard in Resources */,
-				5905AF0B251E5A2C004E403F /* Assets.xcassets in Resources */,
-				5905AF10251E5A2C004E403F /* Skate.mp4 in Resources */,
-				5905AF0C251E5A2C004E403F /* LaunchScreen.storyboard in Resources */,
-				5905AF0E251E5A2C004E403F /* Surf.mp4 in Resources */,
-				5905AF0F251E5A2C004E403F /* Ski.mp4 in Resources */,
+				59A6FA702536ECBF00C542BF /* LaunchScreen.storyboard in Resources */,
+				59A6FA752536ECD100C542BF /* Ski.mp4 in Resources */,
+				59A6FA762536ECD100C542BF /* Skate.mp4 in Resources */,
+				59A6FA732536ECC300C542BF /* Assets.xcassets in Resources */,
+				59A6FA712536ECBF00C542BF /* Main.storyboard in Resources */,
+				59A6FA772536ECD100C542BF /* Surf.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,27 +189,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5905AEED251E5981004E403F /* ViewController.swift in Sources */,
-				5905AEE9251E5981004E403F /* AppDelegate.swift in Sources */,
-				5905AEEB251E5981004E403F /* SceneDelegate.swift in Sources */,
+				59A6FA672536EB5600C542BF /* ViewController.swift in Sources */,
+				59A6FA632536EB5100C542BF /* AppDelegate.swift in Sources */,
+				59A6FA652536EB5400C542BF /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		5905AF03251E5A2C004E403F /* LaunchScreen.storyboard */ = {
+		59BC0BF72536E52A000390AB /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5905AF04251E5A2C004E403F /* Base */,
+				59BC0BF82536E52A000390AB /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		5905AF05251E5A2C004E403F /* Main.storyboard */ = {
+		59BC0BF92536E52A000390AB /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5905AF06251E5A2C004E403F /* Base */,
+				59BC0BFA2536E52A000390AB /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -331,7 +340,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XK98WVAH5W;
-				INFOPLIST_FILE = VideoEditorDemo/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/VideoEditorKitDemo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -350,7 +359,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XK98WVAH5W;
-				INFOPLIST_FILE = VideoEditorDemo/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/VideoEditorKitDemo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -365,7 +374,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5905AEE0251E5981004E403F /* Build configuration list for PBXProject "VideoEditorDemo" */ = {
+		5905AEE0251E5981004E403F /* Build configuration list for PBXProject "VideoEditorKitDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5905AEF7251E5982004E403F /* Debug */,
@@ -374,7 +383,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5905AEF9251E5983004E403F /* Build configuration list for PBXNativeTarget "VideoEditorDemo" */ = {
+		5905AEF9251E5983004E403F /* Build configuration list for PBXNativeTarget "VideoEditorKitDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5905AEFA251E5983004E403F /* Debug */,
@@ -385,10 +394,30 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		59A6FA692536EB8100C542BF /* XCRemoteSwiftPackageReference "PureLayout" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PureLayout/PureLayout";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		5905AF13251E5A50004E403F /* VideoEditor */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VideoEditor;
+		};
+		59A6FA6A2536EB8100C542BF /* PureLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59A6FA692536EB8100C542BF /* XCRemoteSwiftPackageReference "PureLayout" */;
+			productName = PureLayout;
+		};
+		59A6FA6D2536EBA900C542BF /* VideoEditorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VideoEditorKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -10,6 +10,7 @@ import Combine
 import PureLayout
 import UIKit
 import VideoEditor
+import VideoEditorKit
 
 final class ViewController: UIViewController {
 
