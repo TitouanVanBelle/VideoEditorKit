@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import VideoEditor
 
 final class CroppingControlViewController: UIViewController {
 
@@ -15,7 +16,7 @@ final class CroppingControlViewController: UIViewController {
         case main
     }
 
-    typealias Datasource = UICollectionViewDiffableDataSource<Section, CroppingPreset>
+    typealias Datasource = UICollectionViewDiffableDataSource<Section, CroppingPresetCellViewModel>
 
     // MARK: Public Properties
 
@@ -65,10 +66,10 @@ final class CroppingControlViewController: UIViewController {
 
 fileprivate extension CroppingControlViewController {
     func loadPresets() {
-        let presets = CroppingPreset.allCases
-        var snapshot = NSDiffableDataSourceSnapshot<Section, CroppingPreset>()
+        let viewModels = CroppingPreset.allCases.map(CroppingPresetCellViewModel.init)
+        var snapshot = NSDiffableDataSourceSnapshot<Section, CroppingPresetCellViewModel>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(presets, toSection: .main)
+        snapshot.appendItems(viewModels, toSection: .main)
         datasource.apply(snapshot, animatingDifferences: true)
     }
 }
@@ -136,5 +137,11 @@ extension CroppingControlViewController: UICollectionViewDelegateFlowLayout {
         if let cell = collectionView.cellForItem(at: indexPath) as? CroppingPresetCell {
             cell.isSelected.toggle()
         }
+
+        if let viewModel = datasource.itemIdentifier(for: indexPath) {
+            store.send(event: .updateCroppingPreset(viewModel.croppingPreset))
+        }
+
+
     }
 }

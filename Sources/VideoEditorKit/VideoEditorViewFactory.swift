@@ -5,8 +5,8 @@
 //  Created by Titouan Van Belle on 11.09.20.
 //
 
-import AVFoundation // TODO: Remove
 import VideoPlayer
+import VideoEditor
 
 public protocol VideoEditorViewFactoryProtocol {
     func makeVideoEditorViewController() -> VideoEditorViewController

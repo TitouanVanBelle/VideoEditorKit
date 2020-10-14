@@ -90,8 +90,9 @@ fileprivate extension VideoEditorViewController {
                 self.videoPlayerController.pause()
                 self.videoPlayerController.seek(toFraction: position)
 
-            case .assetEdited(let asset):
+            case .assetEdited(let asset, let videoComposition):
                 let item = AVPlayerItem(asset: asset)
+                item.videoComposition = videoComposition
                 self.videoPlayerController.load(item: item)
                 self.store.send(event: .reset)
                 

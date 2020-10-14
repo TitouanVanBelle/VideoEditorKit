@@ -23,7 +23,7 @@ final class CroppingPresetCell: UICollectionViewCell {
     private lazy var title: UILabel = makeTitle()
     private lazy var imageView: UIImageView = makeImageView()
 
-    private var preset: CroppingPreset!
+    private var viewModel: CroppingPresetCellViewModel!
 
     // MARK: Init
 
@@ -41,11 +41,11 @@ final class CroppingPresetCell: UICollectionViewCell {
 // MARK: Bindings
 
 extension CroppingPresetCell {
-    func configure(with preset: CroppingPreset) {
-        title.text = preset.name
-        imageView.image = UIImage(named: preset.imageName, in: .module, compatibleWith: nil)
+    func configure(with viewModel: CroppingPresetCellViewModel) {
+        title.text = viewModel.name
+        imageView.image = UIImage(named: viewModel.imageName, in: .module, compatibleWith: nil)
 
-        self.preset = preset
+        self.viewModel = viewModel
     }
 }
 
@@ -70,7 +70,7 @@ fileprivate extension CroppingPresetCell {
 
     func updateUI() {
         title.textColor = isSelected ? .white : .gray
-        let imageName = isSelected ? preset.selectedImageName : preset.imageName
+        let imageName = isSelected ? viewModel.selectedImageName : viewModel.imageName
         imageView.image = UIImage(named: imageName, in: .module, compatibleWith: nil)
     }
 

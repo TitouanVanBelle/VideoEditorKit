@@ -1,24 +1,29 @@
 //
-//  File.swift
+//  CroppingPresetCellViewModel.swift
 //  
 //
 //  Created by Titouan Van Belle on 09.10.20.
 //
 
 import Foundation
+import VideoEditor
 
-enum CroppingPreset: CaseIterable {
-    case vertical // 3:4
-    case standard // 4:3
-    case portrait // 9:16
-    case square // 1:1
-    case landscape // 16:9
-    case instagram // 4:5
-}
+final class CroppingPresetCellViewModel: NSObject {
 
-extension CroppingPreset {
+    // MARK: Public Properties
+
+    let croppingPreset: CroppingPreset
+
+    // MARK: Init
+
+    init(croppingPreset: CroppingPreset) {
+        self.croppingPreset = croppingPreset
+    }
+
+    // MARK: Public Properties
+
     var ratio: Double {
-        switch self {
+        switch croppingPreset {
         case .vertical:
             return 3 / 4
         case .standard:
@@ -35,7 +40,7 @@ extension CroppingPreset {
     }
 
     var formattedRatio: String {
-        switch self {
+        switch croppingPreset {
         case .vertical:
             return "3:4"
         case .standard:
@@ -52,7 +57,7 @@ extension CroppingPreset {
     }
 
     var name: String {
-        switch self {
+        switch croppingPreset {
         case .vertical:
             return "Vertical"
         case .standard:

@@ -29,11 +29,20 @@
         }
       },
       {
+        "package": "VideoEditor",
+        "repositoryURL": "https://github.com/gymbro/videoeditor",
+        "state": {
+          "branch": "master",
+          "revision": "b46a5ca7eef70b517846ea9fb7bfeac9d2ba3eed",
+          "version": null
+        }
+      },
+      {
         "package": "VideoPlayer",
         "repositoryURL": "https://github.com/gymbro/videoplayer",
         "state": {
           "branch": "master",
-          "revision": "a6599b282b0cdecb523a6ce3ac9b22f84e3836be",
+          "revision": "696e2acdb4bc2c00f5ab57ff31b786a19481c1af",
           "version": null
         }
       }

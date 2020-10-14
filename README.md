@@ -1,4 +1,4 @@
-# VideoEditor
+# VideoEditorKit
 
 A Video Editor allowing the following types of edit:
 

@@ -10,6 +10,7 @@ import Combine
 import CombineFeedback
 import CombineFeedbackUI
 import Foundation
+import VideoEditor
 
 public final class VideoEditorStore: Store<VideoEditorStore.State, VideoEditorStore.Event> {
     init(
@@ -39,7 +40,7 @@ public extension VideoEditorStore {
             case generatingTimeline
             case seeking
             case trimming(Side)
-            case assetEdited(AVAsset)
+            case assetEdited(AVAsset, AVVideoComposition)
             case updatingAsset
             case saving
         }
@@ -49,6 +50,7 @@ public extension VideoEditorStore {
 
         var originalAsset: AVAsset?
         var editedAsset: AVAsset?
+        var videoComposition: AVVideoComposition?
 
         var shouldSeekBackToBeginning = false
         var shouldUpdateSeekerPosition = false
@@ -60,6 +62,8 @@ public extension VideoEditorStore {
 
         var leftHandTrimMarkerPosition: Double = 0.0
         var rightHandTrimMarkerPosition: Double = 1.0
+
+        var croppingPreset: CroppingPreset = .portrait
 
         var status: Status = .idle
     }
@@ -79,7 +83,8 @@ public extension VideoEditorStore {
         case stopTrimming
 
         case updateSpeed(Double)
-        case assetEdited(AVAsset)
+        case updateCroppingPreset(CroppingPreset)
+        case assetEdited(VideoEditResult)
         case failedToEditAsset(Error)
 
         case save
@@ -141,11 +146,16 @@ fileprivate extension VideoEditorStore {
                     state.status = .updatingAsset
                 }
 
-            case .assetEdited(let editedAsset):
-                state.editedAsset = editedAsset
-                state.status = .assetEdited(editedAsset)
+            case .updateCroppingPreset(let croppingPreset):
+                state.croppingPreset = croppingPreset
+                state.status = .updatingAsset
 
-            case .failedToEditAsset(let error):
+            case .assetEdited(let result):
+                state.editedAsset = result.asset
+                state.videoComposition = result.videoComposition
+                state.status = .assetEdited(result.asset, result.videoComposition)
+
+            case .failedToEditAsset( _):
                 /// - TODO:
                 return
 
@@ -186,12 +196,20 @@ fileprivate extension VideoEditorStore {
                 .map { $0.0 }
                 .filter { .updatingAsset == $0.status }
                 .flatMapLatest { state in
-                    editor.apply(edit: state.videoEdit, to: state.originalAsset!)
-                        .receive(on: DispatchQueue.main)
-                        .map(Event.assetEdited)
-                        .catch { Just(Event.failedToEditAsset($0)) }
-                        .eraseToAnyPublisher()
-                        .enqueue(to: consumer)
+                    Future { promise in
+                        do {
+                            let result = try editor.apply(edit: state.videoEdit, to: state.originalAsset!)
+                            promise(.success(result))
+                        } catch {
+                            promise(.failure(error))
+                        }
+                    }
+                    .eraseToAnyPublisher()
+                    .receive(on: DispatchQueue.main)
+                    .map(Event.assetEdited)
+                    .catch { Just(Event.failedToEditAsset($0)) }
+                    .eraseToAnyPublisher()
+                    .enqueue(to: consumer)
                 }
                 .start()
         }
@@ -223,7 +241,10 @@ extension VideoEditorStore.State {
     }
 
     var editedItem: AVPlayerItem? {
-        editedAsset.flatMap(AVPlayerItem.init)
+        guard let editedAsset = editedAsset else { return nil }
+        let item = AVPlayerItem(asset: editedAsset)
+        item.videoComposition = videoComposition
+        return item
     }
 
     var duration: CMTime {
@@ -251,9 +272,13 @@ extension VideoEditorStore.State {
     }
 
     var videoEdit: VideoEdit {
-        VideoEdit(
-            speed: speedRate,
-            trim: (leftHandTrimMarkerPosition, rightHandTrimMarkerPosition)
+        var edit = VideoEdit()
+        edit.speedRate = speedRate
+        edit.trimPositions = (
+            CMTime(seconds: duration.seconds * leftHandTrimMarkerPosition, preferredTimescale: timescale),
+            CMTime(seconds: duration.seconds * rightHandTrimMarkerPosition, preferredTimescale: timescale)
         )
+        edit.croppingPreset = croppingPreset
+        return edit
     }
 }
