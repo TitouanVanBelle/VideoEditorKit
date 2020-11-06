@@ -76,8 +76,4 @@ final class CroppingPresetCellViewModel: NSObject {
     var imageName: String {
         "CroppingPresets/\(name)"
     }
-
-    var selectedImageName: String {
-        imageName + "-Selected"
-    }
 }

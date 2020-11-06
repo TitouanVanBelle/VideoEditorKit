@@ -59,10 +59,6 @@ final class SpeedVideoControlViewController: UIViewController {
 fileprivate extension SpeedVideoControlViewController {
     func setupBindings() {
         slider.$value
-            .filter { [weak self] _ in
-                guard let self = self else { return false }
-                return !self.slider.isDragging
-            }
             .assign(to: \.speed, weakly: self)
             .store(in: &cancellables)
     }

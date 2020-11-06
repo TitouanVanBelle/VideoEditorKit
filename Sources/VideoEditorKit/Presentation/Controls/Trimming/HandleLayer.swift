@@ -31,7 +31,7 @@ final class HandleLayer: CALayer {
 
         super.init()
 
-        backgroundColor = UIColor.foreground.cgColor
+        backgroundColor = UIColor.border.cgColor
     }
 
     override init(layer: Any) {
@@ -62,7 +62,7 @@ final class HandleLayer: CALayer {
         maskLayer.contents = image
         maskLayer.contentsGravity = .resizeAspect
         layer.mask = maskLayer
-        layer.backgroundColor = UIColor.black.withAlphaComponent(0.3).cgColor
+        layer.backgroundColor = UIColor.black.cgColor
 
         return layer
     }

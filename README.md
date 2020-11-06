@@ -30,7 +30,6 @@ func save(editedAsset: AVAsset) {
 
 ## TODO
 
-- Cropping (manual)
-- Cropping (presets)
-- Brightness
-- Contrast
+- Fix Cropping
+- Reintroduce video composition
+- Regenerate timeline after trimming

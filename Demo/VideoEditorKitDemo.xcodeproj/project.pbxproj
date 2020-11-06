@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5905AF14251E5A50004E403F /* VideoEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 5905AF13251E5A50004E403F /* VideoEditor */; };
 		594100092549C55F00AD5F41 /* HongKong.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 594100082549C55F00AD5F41 /* HongKong.mp4 */; };
-		5998A03D25470FB700D32B55 /* Landscape.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5998A03C25470FB700D32B55 /* Landscape.mp4 */; };
 		59A6FA632536EB5100C542BF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0BFF2536E52A000390AB /* AppDelegate.swift */; };
 		59A6FA652536EB5400C542BF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0C012536E52A000390AB /* SceneDelegate.swift */; };
 		59A6FA672536EB5600C542BF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0BF42536E52A000390AB /* ViewController.swift */; };
@@ -23,7 +22,6 @@
 /* Begin PBXFileReference section */
 		5905AEE5251E5981004E403F /* VideoEditorKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoEditorKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		594100082549C55F00AD5F41 /* HongKong.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HongKong.mp4; sourceTree = "<group>"; };
-		5998A03C25470FB700D32B55 /* Landscape.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Landscape.mp4; sourceTree = "<group>"; };
 		59BC0BF42536E52A000390AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		59BC0BF62536E52A000390AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59BC0BF82536E52A000390AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 			isa = PBXGroup;
 			children = (
 				594100082549C55F00AD5F41 /* HongKong.mp4 */,
-				5998A03C25470FB700D32B55 /* Landscape.mp4 */,
 			);
 			path = Videos;
 			sourceTree = "<group>";
@@ -174,7 +171,6 @@
 				59A6FA732536ECC300C542BF /* Assets.xcassets in Resources */,
 				59A6FA712536ECBF00C542BF /* Main.storyboard in Resources */,
 				594100092549C55F00AD5F41 /* HongKong.mp4 in Resources */,
-				5998A03D25470FB700D32B55 /* Landscape.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

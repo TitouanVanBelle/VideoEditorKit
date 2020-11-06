@@ -14,6 +14,8 @@ final class TrimVideoControlViewController: UIViewController {
 
     // MARK: Public Properties
 
+    @Published var trimPositions: (Double, Double) = (0.0, 1.0)
+
     override var tabBarItem: UITabBarItem! {
         get {
             UITabBarItem(
@@ -31,9 +33,15 @@ final class TrimVideoControlViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    private let asset: AVAsset
+    private let generator: VideoTimelineGeneratorProtocol
+
     // MARK: Init
 
-    init() {
+    init(asset: AVAsset, generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()) {
+        self.asset = asset
+        self.generator = generator
+
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,13 +61,23 @@ final class TrimVideoControlViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-//        store.videoTimeline(for: trimmingControlView.bounds)
-//            .replaceError(with: [])
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] images in
-//                guard let self = self else { return }
-//                self.updateVideoTimeline(with: images, assetAspectRatio: self.store.assetAspectRatio)
-//            }.store(in: &cancellables)
+        let track = asset.tracks(withMediaType: AVMediaType.video).first
+        let assetSize = track!.naturalSize.applying(track!.preferredTransform)
+
+        let ratio = abs(assetSize.width) / abs(assetSize.height)
+
+        let bounds = trimmingControlView.bounds
+        let frameWidth = bounds.height * ratio
+        let count = Int(bounds.width / frameWidth) + 1
+
+        generator.generateTimeline(for: asset, within: trimmingControlView.bounds, count: count)
+            .replaceError(with: [])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] images in
+                guard let self = self else { return }
+                self.updateVideoTimeline(with: images, assetAspectRatio: ratio)
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -72,26 +90,12 @@ fileprivate extension TrimVideoControlViewController {
 //
 //            self.updateView(with: state.timeline, aspectRatio: state.aspectRatio)
 //
-//            if !self.trimmingControlView.isSeeking && !self.trimmingControlView.isTrimming {
-//                self.updateSeekerPosition(progress: state.videoProgress)
-//            }
 //        }.store(in: &cancellables)
 //
-//        trimmingControlView.$leftTrimValue
-//            .map(Double.init)
-//            .sink { [weak self] position in
-//                guard let self = self else { return }
-//                self.store.send(event: .trim(.left, position))
-//            }
-//            .store(in: &cancellables)
-//
-//        trimmingControlView.$rightTrimValue
-//            .map(Double.init)
-//            .sink { [weak self] position in
-//                guard let self = self else { return }
-//                self.store.send(event: .trim(.right, position))
-//            }
-//            .store(in: &cancellables)
+        trimmingControlView.$trimPositions
+            .assign(to: \.trimPositions, weakly: self)
+            .store(in: &cancellables)
+
 //
 //        trimmingControlView.$seekerValue
 //            .sink { [weak self] seekerPosition in
@@ -129,10 +133,6 @@ fileprivate extension TrimVideoControlViewController {
         guard !images.isEmpty else { return }
 
         trimmingControlView.configure(with: images, assetAspectRatio: assetAspectRatio)
-    }
-
-    func updateSeekerPosition(progress: Double) {
-        trimmingControlView.setSeekerValue(progress)
     }
 }
 

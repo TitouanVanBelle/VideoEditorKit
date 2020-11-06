@@ -6,10 +6,6 @@
 //
 
 // TODO
-// - Stepped
-// - Add indicator
-// - Current Label
-// - Haptic
 // - Display Values
 
 import Combine
@@ -31,7 +27,7 @@ final class Slider: UIControl {
         static let trackerInnerCircleBackgroundColor = #colorLiteral(red: 0.1137254902, green: 0.1137254902, blue: 0.1215686275, alpha: 1).cgColor
         static let indicatorsBackgroundColor = #colorLiteral(red: 0.8470588235, green: 0.8470588235, blue: 0.8470588235, alpha: 1).cgColor
 
-        static let currentValueFont: UIFont = .systemFont(ofSize: 15.0, weight: .regular)
+        static let currentValueFont: UIFont = .systemFont(ofSize: 15.0, weight: .medium)
     }
 
     // MARK: Inner Types
@@ -39,6 +35,16 @@ final class Slider: UIControl {
     enum Range {
         case linear(min: Double, max: Double)
         case stepped(values: [Double])
+
+        var values: [Double] {
+            switch self {
+            case .linear(let min, let max):
+                return [min, max]
+
+            case .stepped(let values):
+                return values
+            }
+        }
     }
     
     // MARK: Public Properties
@@ -49,7 +55,9 @@ final class Slider: UIControl {
     
     @Published var value: Double = .zero
 
-    var range: Range = .linear(min: 0.0, max: 1.0)
+    var range: Range = .linear(min: 0.0, max: 1.0) {
+        didSet { setNeedsDisplay() }
+    }
 
     override var frame: CGRect {
         didSet {
@@ -63,10 +71,13 @@ final class Slider: UIControl {
 
     @Published var internalValue: Double = .zero
 
+    private var hapticFeedbackLayers: [CALayer] = []
+
     private lazy var backgroundLayer: CALayer = makeBackgroundLayer()
     private lazy var trackerInnerCircleLayer: CALayer = makeTrackerInnerCircleLayer()
     private lazy var trackerOutterCircleLayer: CALayer = makeTrackerOutterCircleLayer()
     private lazy var currentValueLabel: UILabel = makeCurrentValueLabel()
+    private lazy var valuesStackView: UIStackView = makeValuesStackView()
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -94,10 +105,12 @@ final class Slider: UIControl {
         trackerOutterCircleLayer.addSublayer(trackerInnerCircleLayer)
 
         addSubview(currentValueLabel)
+        addSubview(valuesStackView)
 
         xPosition = xPosition(forValue: value)
 
         updateTrackerLayerFrames()
+        positionValues()
         positionHapticIndicators()
     }
     
@@ -112,13 +125,13 @@ final class Slider: UIControl {
     }
     
     public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        isDragging = false
-
         if let touch = touch {
             xPosition = cappedXLocation(for: touch)
         }
 
         value = internalValue
+
+        isDragging = false
     }
 }
 
@@ -147,7 +160,7 @@ fileprivate extension Slider {
             .store(in: &cancellables)
 
         $internalValue
-            .map(formattedValue(forValue:))
+            .map(formattedString(forValue:))
             .assign(to: \.text, weakly: currentValueLabel)
             .store(in: &cancellables)
 
@@ -160,6 +173,10 @@ fileprivate extension Slider {
             .store(in: &cancellables)
 
         $value
+            .filter { [weak self] _ in
+                guard let self = self else { return false }
+                return !self.isDragging
+            }
             .sink { [weak self] value in
                 guard let self = self else { return }
                 self.internalValue = value
@@ -169,15 +186,8 @@ fileprivate extension Slider {
     }
 
     func generateHapticFeedbackIfNeeded(for value: Double) {
-        switch range {
-        case .linear(let min, let max):
-            if value == min || value == max {
-                hapticGenerator.impactOccurred()
-            }
-        case .stepped(let values):
-            if values.contains(value) {
-                hapticGenerator.impactOccurred()
-            }
+        if range.values.contains(value) {
+            hapticGenerator.impactOccurred()
         }
     }
 }
@@ -213,7 +223,7 @@ fileprivate extension Slider {
 
     func value(forXPosition xPosition: CGFloat, in values: [Double]) -> Double {
         let width = bounds.width - Constants.trackerOutterCircleHeight - 2 * Constants.trackerHorizontalMargin
-        let progress = (xPosition - Constants.trackerHorizontalMargin) / width
+        let progress = xPosition / width
         let step = (CGFloat(1) / CGFloat((values.count - 1)))
         let index = Int(floor(progress / step))
 
@@ -259,11 +269,13 @@ fileprivate extension Slider {
         return xPosition
     }
 
-    func formattedValue(forValue value: Double) -> String {
+    func formattedString(forValue value: Double) -> String {
         if value < 1.0 {
-            return String(format: "%.2f", value)
+            return String(format: "%.2fx", value)
+        } else if value < 10.0 {
+            return String(format: "%.1fx", value)
         } else {
-            return String(format: "%.1f", value)
+            return String(format: "%.0fx", value)
         }
     }
 }
@@ -271,31 +283,16 @@ fileprivate extension Slider {
 // MARK: UI
 
 fileprivate extension Slider {
-    func positionHapticIndicators() {
-        switch range {
-        case .linear(let min, let max):
-            positionHapticIndicators(at: [min, max])
-        case .stepped(let values):
-            positionHapticIndicators(at: values)
-        }
+    func positionValues() {
+        range.values
+            .map(makeValueLabel(for:))
+            .forEach(addSubview)
     }
 
-    func positionHapticIndicators(at values: [Double]) {
-        values.forEach { value in
-            let layer = CALayer()
-            let y = (Constants.height - Constants.indicatorHeight) / 2
-            let x = xPosition(forValue: value) + Constants.trackerOutterCircleHeight / 2 - Constants.indicatorHeight / 2
-            layer.frame = CGRect(
-                x: x,
-                y: y,
-                width: Constants.indicatorHeight,
-                height: Constants.indicatorHeight
-            )
-            layer.cornerRadius = Constants.indicatorHeight / 2
-            layer.backgroundColor = Constants.indicatorsBackgroundColor
-
-            backgroundLayer.addSublayer(layer)
-        }
+    func positionHapticIndicators() {
+        range.values
+            .map(makeHapticIndicatorLayer(for:))
+            .forEach(backgroundLayer.addSublayer)
     }
 
     func updateTrackerLayerFrames() {
@@ -310,6 +307,8 @@ fileprivate extension Slider {
         trackerOutterCircleLayer.frame = CGRect(origin: newOrigin, size: trackerOutterCircleLayer.frame.size)
         var frame = trackerOutterCircleLayer.frame
         frame.origin.y -= 40
+        frame.origin.x -= (100.0 - frame.size.width) / 2
+        frame.size.width = 100.0
         currentValueLabel.frame = frame
         CATransaction.commit()
     }
@@ -361,6 +360,59 @@ fileprivate extension Slider {
         label.font = Constants.currentValueFont
         label.textColor = .foreground
         label.textAlignment = .center
+        return label
+    }
+
+    func makeValuesStackView() -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: [])
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.frame = CGRect(
+            x: Constants.trackerOutterCircleHeight / 2,
+            y: bounds.midY + Constants.height / 2,
+            width: bounds.width - Constants.trackerOutterCircleHeight,
+            height: 34.0
+        )
+        return stack
+    }
+
+    func makeHapticIndicatorLayer(for value: Double) -> CALayer {
+        let layer = CALayer()
+        let y = (Constants.height - Constants.indicatorHeight) / 2
+        let x = xPosition(forValue: value) + Constants.trackerOutterCircleHeight / 2 - Constants.indicatorHeight / 2
+        layer.frame = CGRect(
+            x: x,
+            y: y,
+            width: Constants.indicatorHeight,
+            height: Constants.indicatorHeight
+        )
+        layer.cornerRadius = Constants.indicatorHeight / 2
+        layer.backgroundColor = Constants.indicatorsBackgroundColor
+        return layer
+    }
+
+    func makeValueLabel(for value: Double) -> UILabel {
+        let label = UILabel()
+        if value < 1.0 {
+            label.text = String(format: "%.2fx", value)
+        } else {
+            label.text = String(format: "%.0fx", value)
+        }
+
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 11.0)
+
+        label.sizeToFit()
+
+        let y = bounds.midY + Constants.height / 2
+        let x = xPosition(forValue: value) + (Constants.trackerOutterCircleHeight - label.frame.width) / 2
+        label.frame = CGRect(
+            x: x,
+            y: y,
+            width: label.frame.width,
+            height: 34.0
+        )
+
         return label
     }
 }

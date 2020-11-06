@@ -5,6 +5,7 @@
 //  Created by Titouan Van Belle on 29.10.20.
 //
 
+import AVFoundation
 import Combine
 import PureLayout
 import UIKit
@@ -14,6 +15,7 @@ final class VideoControlViewController: UIViewController {
     // MARK: Public Properties
 
     @Published var speed: Double = .zero
+    @Published var trimPositions: (Double, Double) = (0.0, 1.0)
 
     @Published var onDismiss = PassthroughSubject<Void, Never>()
 
@@ -34,9 +36,13 @@ final class VideoControlViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    private let asset: AVAsset
+
     // MARK: Init
 
-    init() {
+    init(asset: AVAsset) {
+        self.asset = asset
+
         super.init(nibName: nil, bundle: nil)
 
         setupUI()
@@ -54,6 +60,10 @@ fileprivate extension VideoControlViewController {
     func setupBindings() {
         speedVideoControlViewController.$speed
             .assign(to: \.speed, weakly: self)
+            .store(in: &cancellables)
+
+        trimVideoControlViewController.$trimPositions
+            .assign(to: \.trimPositions, weakly: self)
             .store(in: &cancellables)
     }
 }
@@ -135,7 +145,7 @@ fileprivate extension VideoControlViewController {
     }
 
     func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
-        TrimVideoControlViewController()
+        TrimVideoControlViewController(asset: asset)
     }
 
     func makeCropVideoControlViewController() -> CropVideoControlViewController {
@@ -162,7 +172,7 @@ fileprivate extension VideoControlViewController {
 
     func makeTitleLabel() -> UILabel {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 12.0, weight: .medium)
+        label.font = .systemFont(ofSize: 13.0, weight: .medium)
         label.textColor = #colorLiteral(red: 0.1137254902, green: 0.1137254902, blue: 0.1215686275, alpha: 1)
         return label
     }

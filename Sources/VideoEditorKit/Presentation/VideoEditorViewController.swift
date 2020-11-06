@@ -80,8 +80,7 @@ fileprivate extension VideoEditorViewController {
         store.$editedPlayerItem
             .sink { [weak self] item in
                 guard let self = self else { return }
-                print("Loading edited item into video player. New duration = \(item.duration.seconds)")
-                self.videoPlayerController.load(item: item)
+                self.videoPlayerController.load(item: item, autoPlay: true)
             }
             .store(in: &cancellables)
 
@@ -263,10 +262,14 @@ fileprivate extension VideoEditorViewController {
     }
 
     func makeVideoControlViewController() -> VideoControlViewController {
-        let controller = VideoControlViewController()
+        let controller = VideoControlViewController(asset: store.originalAsset)
 
         controller.$speed
             .assign(to: \.speed, weakly: store)
+            .store(in: &cancellables)
+
+        controller.$trimPositions
+            .assign(to: \.trimPositions, weakly: store)
             .store(in: &cancellables)
 
         controller.onDismiss

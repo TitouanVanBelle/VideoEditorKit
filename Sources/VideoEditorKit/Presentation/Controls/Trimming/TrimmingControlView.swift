@@ -13,30 +13,12 @@ public class TrimmingControlView: UIControl {
 
     // MARK: Public Properties
 
-    @Published var isSeeking: Bool = false
     @Published var isTrimming: Bool = false
 
-    @Published var seekerValue: CGFloat = 0.0 {
-        didSet {
-            updateSeekerFrame()
-        }
-    }
-
-    @Published public var leftTrimValue: CGFloat = 0.0 {
-        didSet {
-            updateLeftHandleFrame()
-        }
-    }
-
-    @Published public var rightTrimValue: CGFloat = 1.0 {
-        didSet {
-            updateRightHandleFrame()
-        }
-    }
+    @Published public var trimPositions: (Double, Double) = (0.0, 1.0)
 
     public override var bounds: CGRect {
         didSet {
-            updateSeekerFrame()
             updateLeftHandleFrame()
             updateRightHandleFrame()
         }
@@ -44,11 +26,19 @@ public class TrimmingControlView: UIControl {
 
     public var isConfigured: Bool = false
 
-    public func setSeekerValue(_ value: Double) {
-        seekerValue = CGFloat(value)
+    // MARK: Private Properties
+
+    private var internalLeftTrimValue: CGFloat = 0.0 {
+        didSet {
+            updateLeftHandleFrame()
+        }
     }
 
-    // MARK: Private Properties
+    public var internalRightTrimValue: CGFloat = 1.0 {
+        didSet {
+            updateRightHandleFrame()
+        }
+    }
 
     private var handleWidth: CGFloat = 20.0
 
@@ -63,7 +53,6 @@ public class TrimmingControlView: UIControl {
         rightHandle.frame.maxX
     }
 
-    private lazy var seeker: CALayer = makeSeeker()
     private lazy var rightHandle: CALayer = makeRightHandle()
     private lazy var leftHandle: CALayer = makeLeftHandle()
     private lazy var rightDimmedBackground: CALayer = makeRightDimmedBackground()
@@ -91,14 +80,9 @@ public class TrimmingControlView: UIControl {
         if leftHandle.frame.contains(location) {
             isTrimming = true
             isLeftHandleHighlighted = true
-            seeker.isHidden = true
         } else if rightHandle.frame.contains(location) {
             isTrimming = true
             isRightHandleHighlighted = true
-            seeker.isHidden = true
-        } else {
-            isSeeking = true
-            seekerValue = boundedSeekerValue(seekerPosition: location.x)
         }
 
         return true
@@ -108,22 +92,20 @@ public class TrimmingControlView: UIControl {
         let location = touch.location(in: self)
 
         if isLeftHandleHighlighted {
-            leftTrimValue = self.leftHandleValue(for: location.x)
+            internalLeftTrimValue = self.leftHandleValue(for: location.x)
         } else if isRightHandleHighlighted {
-            rightTrimValue = self.rightHandleValue(for: location.x)
-        } else {
-            seekerValue = boundedSeekerValue(seekerPosition: location.x)
+            internalRightTrimValue = self.rightHandleValue(for: location.x)
         }
 
         return true
     }
 
     public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        seeker.isHidden = false
         isLeftHandleHighlighted = false
         isRightHandleHighlighted = false
         isTrimming = false
-        isSeeking = false
+
+        trimPositions = (Double(internalLeftTrimValue), Double(internalRightTrimValue))
     }
 }
 
@@ -165,14 +147,10 @@ fileprivate extension TrimmingControlView {
     }
 
     func setupView() {
-        layer.cornerRadius = 8.0
-        clipsToBounds = true
-
         addSubview(timeline)
 
         layer.addSublayer(leftDimmedBackground)
         layer.addSublayer(rightDimmedBackground)
-        layer.addSublayer(seeker)
         layer.addSublayer(leftHandle)
         layer.addSublayer(rightHandle)
     }
@@ -186,13 +164,11 @@ fileprivate extension TrimmingControlView {
         CATransaction.setDisableActions(true)
 
         leftHandle.frame = CGRect(
-            x: bounds.width * leftTrimValue,
+            x: bounds.width * internalLeftTrimValue,
             y: 0,
             width: handleWidth,
             height: bounds.height
         )
-
-        leftHandle.roundCorners(8.0, [.topLeft, .bottomLeft])
 
         leftDimmedBackground.frame = CGRect(
             x: 0,
@@ -209,12 +185,11 @@ fileprivate extension TrimmingControlView {
         CATransaction.setDisableActions(true)
 
         rightHandle.frame = CGRect(
-            x: bounds.width * rightTrimValue - handleWidth,
+            x: bounds.width * internalRightTrimValue - handleWidth,
             y: 0,
             width: handleWidth,
             height: bounds.height
         )
-        rightHandle.roundCorners(8.0, [.topRight, .bottomRight])
 
         rightDimmedBackground.frame = CGRect(
             x: rightHandle.frame.minX,
@@ -226,33 +201,10 @@ fileprivate extension TrimmingControlView {
         CATransaction.commit()
     }
 
-    func updateSeekerFrame() {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-
-        let verticalMargin: CGFloat = 4.0
-        let width: CGFloat = 2.0
-        let x = leftHandleMinX + (rightHandleMaxX - leftHandleMinX - width / 2) * seekerValue
-        seeker.frame = CGRect(
-            x: x,
-            y: 0 - verticalMargin,
-            width: width,
-            height: bounds.height + 2 * verticalMargin
-        )
-
-        CATransaction.commit()
-    }
-
     func makeVideoTimeline() -> VideoTimelineView {
         let view = VideoTimelineView()
+        view.isUserInteractionEnabled = false
         return view
-    }
-
-    func makeSeeker() -> CALayer {
-        let layer = CALayer()
-        layer.backgroundColor = UIColor.white.cgColor
-        layer.cornerRadius = 3.0
-        return layer
     }
 
     func makeRightHandle() -> CALayer {

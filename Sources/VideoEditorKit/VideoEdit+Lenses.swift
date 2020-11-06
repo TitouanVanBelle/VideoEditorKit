@@ -5,6 +5,7 @@
 //  Created by Titouan Van Belle on 06.11.20.
 //
 
+import CoreMedia
 import Foundation
 import VideoEditor
 
@@ -19,4 +20,17 @@ extension VideoEdit {
             return edit
         }
     )
+
+    static let trimPositionsLens = Lens<VideoEdit, (CMTime, CMTime)?>(
+        from: { $0.trimPositions },
+        to: { trimPositions, previousEdit in
+            var edit = VideoEdit()
+            edit.croppingPreset = previousEdit.croppingPreset
+            edit.speedRate = previousEdit.speedRate
+            edit.trimPositions = trimPositions
+            return edit
+        }
+    )
 }
+
+

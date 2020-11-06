@@ -70,21 +70,21 @@ fileprivate extension CroppingPresetCell {
     }
 
     func updateUI() {
-        title.textColor = isSelected ? .white : .gray
-        let imageName = isSelected ? viewModel.selectedImageName : viewModel.imageName
-        imageView.image = UIImage(named: imageName, in: .module, compatibleWith: nil)
+        title.font = isSelected ? .systemFont(ofSize: 12.0, weight: .medium) : .systemFont(ofSize: 12.0)
+        imageView.tintColor = isSelected ? .croppingPresetSelected : .croppingPreset
     }
 
     func makeTitle() -> UILabel {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13.0, weight: .medium)
-        label.textColor = .gray
+        label.font = .systemFont(ofSize: 12.0)
+        label.textColor = UIColor.foreground
         return label
     }
 
     func makeImageView() -> UIImageView {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
+        view.tintColor = .croppingPreset
         return view
     }
 

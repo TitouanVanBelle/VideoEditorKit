@@ -12,7 +12,7 @@ protocol VideoEditorViewFactoryProtocol {
     func makeVideoControlListController(store: VideoEditorStore) -> VideoControlListController
     func makeCropVideoControlViewController() -> CropVideoControlViewController
     func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController
-    func makeTrimVideoControlViewController() -> TrimVideoControlViewController
+//    func makeTrimVideoControlViewController() -> TrimVideoControlViewController
 }
 
 final class VideoEditorViewFactory: VideoEditorViewFactoryProtocol {
@@ -35,7 +35,7 @@ final class VideoEditorViewFactory: VideoEditorViewFactoryProtocol {
         SpeedVideoControlViewController()
     }
 
-    func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
-        TrimVideoControlViewController()
-    }
+//    func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
+//        TrimVideoControlViewController()
+//    }
 }

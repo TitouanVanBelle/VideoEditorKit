@@ -32,34 +32,9 @@ final class VideoEditorStore {
     @Published var currentSeekingValue: Double = .zero
 
     @Published var speed: Double = 1.0
+    @Published var trimPositions: (Double, Double) = (0.0, 1.0)
 
     @Published var videoEdit: VideoEdit
-
-    var currentSeekingTime: CMTime {
-        CMTime(seconds: duration.seconds * currentSeekingValue, preferredTimescale: duration.timescale)
-    }
-
-    var assetAspectRatio: CGFloat {
-        guard let track = editedPlayerItem.asset.tracks(withMediaType: AVMediaType.video).first else {
-            return .zero
-        }
-
-        let assetSize = track.naturalSize.applying(track.preferredTransform)
-
-        return abs(assetSize.width) / abs(assetSize.height)
-    }
-
-    var duration: CMTime {
-        editedPlayerItem.asset.duration
-    }
-
-    var fractionCompleted: Double {
-        guard duration != .zero else {
-            return .zero
-        }
-
-        return playheadProgress.seconds / duration.seconds
-    }
 
     // MARK: Private Properties
 
@@ -114,10 +89,59 @@ fileprivate extension VideoEditorStore {
             }
             .assign(to: \.videoEdit, weakly: self)
             .store(in: &cancellables)
+
+        $trimPositions
+            .compactMap { [weak self] trimPositions in
+                guard let self = self else { return nil }
+                let startTime = CMTime(
+                    seconds: self.originalDuration.seconds * trimPositions.0,
+                    preferredTimescale: self.originalDuration.timescale
+                )
+                let endTime = CMTime(
+                    seconds: self.originalDuration.seconds * trimPositions.1,
+                    preferredTimescale: self.originalDuration.timescale
+                )
+                let positions = (startTime, endTime)
+                print("New trim positions: \(positions.0.seconds) / \(positions.1.seconds)")
+
+                return VideoEdit.trimPositionsLens.to(positions, self.videoEdit)
+            }
+            .assign(to: \.videoEdit, weakly: self)
+            .store(in: &cancellables)
     }
 }
 
 extension VideoEditorStore {
+    var currentSeekingTime: CMTime {
+        CMTime(seconds: duration.seconds * currentSeekingValue, preferredTimescale: duration.timescale)
+    }
+
+    var assetAspectRatio: CGFloat {
+        guard let track = editedPlayerItem.asset.tracks(withMediaType: AVMediaType.video).first else {
+            return .zero
+        }
+
+        let assetSize = track.naturalSize.applying(track.preferredTransform)
+
+        return abs(assetSize.width) / abs(assetSize.height)
+    }
+
+    var originalDuration: CMTime {
+        originalAsset.duration
+    }
+
+    var duration: CMTime {
+        editedPlayerItem.asset.duration
+    }
+
+    var fractionCompleted: Double {
+        guard duration != .zero else {
+            return .zero
+        }
+
+        return playheadProgress.seconds / duration.seconds
+    }
+    
     func videoTimeline(for bounds: CGRect) -> AnyPublisher<[CGImage], Error> {
         generator.generateTimeline(for: originalAsset, within: bounds, count: numberOfFrames(within: bounds))
     }
