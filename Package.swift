@@ -17,8 +17,7 @@ let package = Package(
     dependencies: [
         .package(name: "VideoPlayer", url: "https://github.com/gymbro/videoplayer", .branch("master")),
         .package(name: "VideoEditor", url: "https://github.com/gymbro/videoeditor", .branch("master")),
-        .package(url: "https://github.com/PureLayout/PureLayout", .upToNextMajor(from: "3.1.6")),
-        .package(url: "https://github.com/sergdort/CombineFeedback", .branch("master"))
+        .package(url: "https://github.com/PureLayout/PureLayout", .upToNextMajor(from: "3.1.6"))
     ],
     targets: [
         .target(
@@ -26,9 +25,7 @@ let package = Package(
             dependencies: [
                 "VideoPlayer",
                 "VideoEditor",
-                "PureLayout",
-                .product(name: "CombineFeedback", package: "CombineFeedback"),
-                .product(name: "CombineFeedbackUI", package: "CombineFeedback")
+                "PureLayout"
             ],
             resources: [.process("Resources")])
     ]

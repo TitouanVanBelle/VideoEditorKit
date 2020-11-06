@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5905AF14251E5A50004E403F /* VideoEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 5905AF13251E5A50004E403F /* VideoEditor */; };
+		594100092549C55F00AD5F41 /* HongKong.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 594100082549C55F00AD5F41 /* HongKong.mp4 */; };
+		5998A03D25470FB700D32B55 /* Landscape.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5998A03C25470FB700D32B55 /* Landscape.mp4 */; };
 		59A6FA632536EB5100C542BF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0BFF2536E52A000390AB /* AppDelegate.swift */; };
 		59A6FA652536EB5400C542BF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0C012536E52A000390AB /* SceneDelegate.swift */; };
 		59A6FA672536EB5600C542BF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59BC0BF42536E52A000390AB /* ViewController.swift */; };
@@ -16,20 +18,16 @@
 		59A6FA702536ECBF00C542BF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BF72536E52A000390AB /* LaunchScreen.storyboard */; };
 		59A6FA712536ECBF00C542BF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BF92536E52A000390AB /* Main.storyboard */; };
 		59A6FA732536ECC300C542BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BF62536E52A000390AB /* Assets.xcassets */; };
-		59A6FA752536ECD100C542BF /* Ski.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BFD2536E52A000390AB /* Ski.mp4 */; };
-		59A6FA762536ECD100C542BF /* Skate.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BFE2536E52A000390AB /* Skate.mp4 */; };
-		59A6FA772536ECD100C542BF /* Surf.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 59BC0BFC2536E52A000390AB /* Surf.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5905AEE5251E5981004E403F /* VideoEditorKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoEditorKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		594100082549C55F00AD5F41 /* HongKong.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = HongKong.mp4; sourceTree = "<group>"; };
+		5998A03C25470FB700D32B55 /* Landscape.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Landscape.mp4; sourceTree = "<group>"; };
 		59BC0BF42536E52A000390AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		59BC0BF62536E52A000390AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59BC0BF82536E52A000390AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		59BC0BFA2536E52A000390AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		59BC0BFC2536E52A000390AB /* Surf.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Surf.mp4; sourceTree = "<group>"; };
-		59BC0BFD2536E52A000390AB /* Ski.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ski.mp4; sourceTree = "<group>"; };
-		59BC0BFE2536E52A000390AB /* Skate.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Skate.mp4; sourceTree = "<group>"; };
 		59BC0BFF2536E52A000390AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59BC0C002536E52A000390AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59BC0C012536E52A000390AB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,9 +99,8 @@
 		59BC0BFB2536E52A000390AB /* Videos */ = {
 			isa = PBXGroup;
 			children = (
-				59BC0BFC2536E52A000390AB /* Surf.mp4 */,
-				59BC0BFD2536E52A000390AB /* Ski.mp4 */,
-				59BC0BFE2536E52A000390AB /* Skate.mp4 */,
+				594100082549C55F00AD5F41 /* HongKong.mp4 */,
+				5998A03C25470FB700D32B55 /* Landscape.mp4 */,
 			);
 			path = Videos;
 			sourceTree = "<group>";
@@ -174,11 +171,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				59A6FA702536ECBF00C542BF /* LaunchScreen.storyboard in Resources */,
-				59A6FA752536ECD100C542BF /* Ski.mp4 in Resources */,
-				59A6FA762536ECD100C542BF /* Skate.mp4 in Resources */,
 				59A6FA732536ECC300C542BF /* Assets.xcassets in Resources */,
 				59A6FA712536ECBF00C542BF /* Main.storyboard in Resources */,
-				59A6FA772536ECD100C542BF /* Surf.mp4 in Resources */,
+				594100092549C55F00AD5F41 /* HongKong.mp4 in Resources */,
+				5998A03D25470FB700D32B55 /* Landscape.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

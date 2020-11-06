@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIColor {
-    public static let background = #colorLiteral(red: 0.1137254902, green: 0.1333333333, blue: 0.1529411765, alpha: 1) // 1D2227
-    public static let secondaryBackground = #colorLiteral(red: 0.1176470588, green: 0.1333333333, blue: 0.1490196078, alpha: 1)
-    public static let primaryForeground = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) // FFFFFF
+    static let background = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) // 1D2227
+    static let foreground = #colorLiteral(red: 0.1137254902, green: 0.1137254902, blue: 0.1215686275, alpha: 1) // FFFFFF
+    static let border = #colorLiteral(red: 0.9490196078, green: 0.9568627451, blue: 0.9647058824, alpha: 1) // F2F4F6
 }

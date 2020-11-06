@@ -2,262 +2,45 @@
 //  VideoEditorStore.swift
 //  
 //
-//  Created by Titouan Van Belle on 11.09.20.
+//  Created by Titouan Van Belle on 28.10.20.
 //
 
 import AVFoundation
 import Combine
-import CombineFeedback
-import CombineFeedbackUI
 import Foundation
 import VideoEditor
 
-public final class VideoEditorStore: Store<VideoEditorStore.State, VideoEditorStore.Event> {
-    init(
-        editor: VideoEditorProtocol,
-        generator: VideoTimelineGeneratorProtocol
-    ) {
-        super.init(initial: State(),
-                   feedbacks: [
-                    Self.whenGeneratingTimeline(generator: generator),
-                    Self.whenUpdatingAsset(editor: editor)
-                   ],
-                   reducer: Self.reducer())
-    }
-}
-
-// MARK: Inner Types
-
-public extension VideoEditorStore {
-    enum Side {
-        case left
-        case right
-    }
-
-    struct State {
-        enum Status: Equatable {
-            case idle
-            case generatingTimeline
-            case seeking
-            case trimming(Side)
-            case assetEdited(AVAsset, AVVideoComposition)
-            case updatingAsset
-            case saving
-        }
-
-        var bounds: CGRect = .zero
-        var timeline: [CGImage] = []
-
-        var originalAsset: AVAsset?
-        var editedAsset: AVAsset?
-        var videoComposition: AVVideoComposition?
-
-        var shouldSeekBackToBeginning = false
-        var shouldUpdateSeekerPosition = false
-
-        var videoProgress: Double = 0.0
-        var manualSeekPosition: Double = 0.0
-
-        var speedRate: Double = 1.0
-
-        var leftHandTrimMarkerPosition: Double = 0.0
-        var rightHandTrimMarkerPosition: Double = 1.0
-
-        var croppingPreset: CroppingPreset = .portrait
-
-        var status: Status = .idle
-    }
-
-    enum Event {
-        case load(AVAsset)
-        case generateTimeline(CGRect)
-        case timelineGenerated([CGImage])
-        case failedToGenerateTimeline
-
-        case videoProgress(Double)
-
-        case seek(Double)
-        case stopSeeking
-
-        case trim(Side, Double)
-        case stopTrimming
-
-        case updateSpeed(Double)
-        case updateCroppingPreset(CroppingPreset)
-        case assetEdited(VideoEditResult)
-        case failedToEditAsset(Error)
-
-        case save
-
-        case reset
-    }
-}
-
-// MARK: State Machine
-
-fileprivate extension VideoEditorStore {
-    static func reducer() -> Reducer<State, Event> {
-        .init { state, event in
-            switch event {
-            case .load(let asset):
-                state.originalAsset = asset
-                state.editedAsset = asset
-
-            case .generateTimeline(let bounds):
-                state.bounds = bounds
-                state.status = .generatingTimeline
-
-            case .timelineGenerated(let timeline):
-                state.timeline = timeline
-                state.status = .idle
-
-            case .failedToGenerateTimeline:
-                /// - TODO: Notify user
-                return
-
-            case .videoProgress(let progress):
-                state.videoProgress = progress
-
-            case .seek(let position):
-                state.status = .seeking
-                state.manualSeekPosition = position
-
-            case .stopSeeking:
-                state.status = .idle
-
-            case .trim(let side, let position):
-                switch side {
-                case .left:
-                    state.leftHandTrimMarkerPosition = position
-                case .right:
-                    state.rightHandTrimMarkerPosition = position
-                }
-
-                state.status = .trimming(side)
-
-            case .stopTrimming:
-                state.videoProgress = .zero
-                state.shouldSeekBackToBeginning = true
-                state.status = .updatingAsset
-
-            case .updateSpeed(let speedRate):
-                if state.speedRate != speedRate {
-                    state.speedRate = speedRate
-                    state.status = .updatingAsset
-                }
-
-            case .updateCroppingPreset(let croppingPreset):
-                state.croppingPreset = croppingPreset
-                state.status = .updatingAsset
-
-            case .assetEdited(let result):
-                state.editedAsset = result.asset
-                state.videoComposition = result.videoComposition
-                state.status = .assetEdited(result.asset, result.videoComposition)
-
-            case .failedToEditAsset( _):
-                /// - TODO:
-                return
-
-            case .reset:
-                state.shouldSeekBackToBeginning = false
-                state.status = .idle
-
-            case .save:
-                state.status = .saving
-            }
-        }
-    }
-}
-
-// MARK: Feedbacks
-
-fileprivate extension VideoEditorStore {
-    static func whenGeneratingTimeline(generator: VideoTimelineGeneratorProtocol) -> Feedback<State, Event> {
-        .custom { state, consumer in
-            state
-                .map { $0.0 }
-                .filter { .generatingTimeline == $0.status }
-                .flatMapLatest { state in
-                    generator.generateTimeline(for: state.originalAsset!, within: state.bounds, count: state.numberOfFrames(within: state.bounds))
-                        .receive(on: DispatchQueue.main)
-                        .map(Event.timelineGenerated)
-                        .catch { _ in Just(Event.failedToGenerateTimeline) }
-                        .eraseToAnyPublisher()
-                        .enqueue(to: consumer)
-                }
-                .start()
-        }
-    }
-
-    static func whenUpdatingAsset(editor: VideoEditorProtocol) -> Feedback<State, Event> {
-        .custom { state, consumer in
-            state
-                .map { $0.0 }
-                .filter { .updatingAsset == $0.status }
-                .flatMapLatest { state in
-                    Future { promise in
-                        do {
-                            let result = try editor.apply(edit: state.videoEdit, to: state.originalAsset!)
-                            promise(.success(result))
-                        } catch {
-                            promise(.failure(error))
-                        }
-                    }
-                    .eraseToAnyPublisher()
-                    .receive(on: DispatchQueue.main)
-                    .map(Event.assetEdited)
-                    .catch { Just(Event.failedToEditAsset($0)) }
-                    .eraseToAnyPublisher()
-                    .enqueue(to: consumer)
-                }
-                .start()
-        }
-    }
-}
-
-// MARK: View Model
-
-extension VideoEditorStore.State {
-    var isSeeking: Bool {
-        status == .seeking
-    }
-
-    var isTrimming: Bool {
-        if case .trimming = status {
-            return true
-        }
-
-        return false
-    }
-
-    func trimMarkerPosition(for side: VideoEditorStore.Side) -> Double {
-        switch side {
-        case .left:
-            return leftHandTrimMarkerPosition
-        case .right:
-            return rightHandTrimMarkerPosition
-        }
-    }
-
-    var editedItem: AVPlayerItem? {
-        guard let editedAsset = editedAsset else { return nil }
-        let item = AVPlayerItem(asset: editedAsset)
-        item.videoComposition = videoComposition
+extension VideoEditResult {
+    var item: AVPlayerItem {
+        let item = AVPlayerItem(asset: asset)
+//        item.videoComposition = videoComposition
         return item
     }
+}
 
-    var duration: CMTime {
-        editedAsset != nil ? editedAsset!.duration : .zero
+final class VideoEditorStore {
+
+    // MARK: Public Properties
+
+    @Published private(set) var originalAsset: AVAsset
+
+    @Published var editedPlayerItem: AVPlayerItem
+
+    @Published var playheadProgress: CMTime = .zero
+
+    @Published var isSeeking: Bool = false
+    @Published var currentSeekingValue: Double = .zero
+
+    @Published var speed: Double = 1.0
+
+    @Published var videoEdit: VideoEdit
+
+    var currentSeekingTime: CMTime {
+        CMTime(seconds: duration.seconds * currentSeekingValue, preferredTimescale: duration.timescale)
     }
 
-    var timescale: CMTimeScale {
-        duration.timescale
-    }
-
-    var aspectRatio: CGFloat {
-        guard let editedAsset = editedAsset,
-              let track = editedAsset.tracks(withMediaType: AVMediaType.video).first else {
+    var assetAspectRatio: CGFloat {
+        guard let track = editedPlayerItem.asset.tracks(withMediaType: AVMediaType.video).first else {
             return .zero
         }
 
@@ -266,19 +49,84 @@ extension VideoEditorStore.State {
         return abs(assetSize.width) / abs(assetSize.height)
     }
 
-    func numberOfFrames(within bounds: CGRect) -> Int {
-        let frameWidth = bounds.height * aspectRatio
-        return Int(bounds.width / frameWidth) + 1
+    var duration: CMTime {
+        editedPlayerItem.asset.duration
     }
 
-    var videoEdit: VideoEdit {
-        var edit = VideoEdit()
-        edit.speedRate = speedRate
-        edit.trimPositions = (
-            CMTime(seconds: duration.seconds * leftHandTrimMarkerPosition, preferredTimescale: timescale),
-            CMTime(seconds: duration.seconds * rightHandTrimMarkerPosition, preferredTimescale: timescale)
-        )
-        edit.croppingPreset = croppingPreset
-        return edit
+    var fractionCompleted: Double {
+        guard duration != .zero else {
+            return .zero
+        }
+
+        return playheadProgress.seconds / duration.seconds
+    }
+
+    // MARK: Private Properties
+
+    private var cancellables = Set<AnyCancellable>()
+
+    private let editor: VideoEditor
+    private let generator: VideoTimelineGeneratorProtocol
+
+    // MARK: Init
+
+    init(
+        asset: AVAsset,
+        editor: VideoEditor = .init(),
+        generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()
+    ) {
+        self.originalAsset = asset
+        self.editor = editor
+        self.generator = generator
+
+        var videoEdit = VideoEdit()
+        videoEdit.speedRate = 1.0
+
+        let result = try! self.editor.apply(edit: videoEdit, to: asset)
+        self.editedPlayerItem = result.item
+        self.videoEdit = videoEdit
+
+        setupBindings()
     }
 }
+
+// MARK: Bindings
+
+fileprivate extension VideoEditorStore {
+    func setupBindings() {
+        $videoEdit
+            .compactMap { [weak self] edit -> VideoEditResult? in
+                guard let self = self else { return nil }
+                return try? self.editor.apply(edit: edit, to: self.originalAsset)
+            }
+            .map(\.item)
+            .assign(to: \.editedPlayerItem, weakly: self)
+            .store(in: &cancellables)
+
+        $speed
+            .filter { [weak self] speed in
+                guard let self = self else { return false }
+                return speed != self.videoEdit.speedRate
+            }
+            .compactMap { [weak self] speedRate in
+                guard let self = self else { return nil }
+                return VideoEdit.speedRateLens.to(speedRate, self.videoEdit)
+            }
+            .assign(to: \.videoEdit, weakly: self)
+            .store(in: &cancellables)
+    }
+}
+
+extension VideoEditorStore {
+    func videoTimeline(for bounds: CGRect) -> AnyPublisher<[CGImage], Error> {
+        generator.generateTimeline(for: originalAsset, within: bounds, count: numberOfFrames(within: bounds))
+    }
+}
+
+fileprivate extension VideoEditorStore {
+    func numberOfFrames(within bounds: CGRect) -> Int {
+        let frameWidth = bounds.height * assetAspectRatio
+        return Int(bounds.width / frameWidth) + 1
+    }
+}
+

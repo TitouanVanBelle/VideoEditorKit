@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "CombineFeedback",
-        "repositoryURL": "https://github.com/sergdort/CombineFeedback",
-        "state": {
-          "branch": "master",
-          "revision": "14a17fae5ec0a2f11c356dc2c71fcc1844819627",
-          "version": null
-        }
-      },
-      {
         "package": "PureLayout",
         "repositoryURL": "https://github.com/PureLayout/PureLayout",
         "state": {
@@ -20,20 +11,11 @@
         }
       },
       {
-        "package": "swift-case-paths",
-        "repositoryURL": "https://github.com/pointfreeco/swift-case-paths.git",
-        "state": {
-          "branch": null,
-          "revision": "ed1838ab4fa5d47db8aa640736dd5b7672548873",
-          "version": "0.1.2"
-        }
-      },
-      {
         "package": "VideoEditor",
         "repositoryURL": "https://github.com/gymbro/videoeditor",
         "state": {
           "branch": "master",
-          "revision": "b46a5ca7eef70b517846ea9fb7bfeac9d2ba3eed",
+          "revision": "59611a044b51f2b44d35656c6b85620beee0aad4",
           "version": null
         }
       },
@@ -42,7 +24,7 @@
         "repositoryURL": "https://github.com/gymbro/videoplayer",
         "state": {
           "branch": "master",
-          "revision": "696e2acdb4bc2c00f5ab57ff31b786a19481c1af",
+          "revision": "318bfb249f66ffc19ce6197e02eeb3dfabc665f2",
           "version": null
         }
       }

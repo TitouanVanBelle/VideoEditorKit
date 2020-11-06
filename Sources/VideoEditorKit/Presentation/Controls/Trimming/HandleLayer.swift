@@ -31,7 +31,13 @@ final class HandleLayer: CALayer {
 
         super.init()
 
-        backgroundColor = UIColor.primaryForeground.cgColor
+        backgroundColor = UIColor.foreground.cgColor
+    }
+
+    override init(layer: Any) {
+        self.side = .left
+        
+        super.init(layer: layer)
     }
 
     override func layoutSublayers() {
@@ -56,7 +62,7 @@ final class HandleLayer: CALayer {
         maskLayer.contents = image
         maskLayer.contentsGravity = .resizeAspect
         layer.mask = maskLayer
-        layer.backgroundColor = UIColor.secondaryBackground.withAlphaComponent(0.3).cgColor
+        layer.backgroundColor = UIColor.black.withAlphaComponent(0.3).cgColor
 
         return layer
     }

@@ -68,7 +68,7 @@ public class TrimmingControlView: UIControl {
     private lazy var leftHandle: CALayer = makeLeftHandle()
     private lazy var rightDimmedBackground: CALayer = makeRightDimmedBackground()
     private lazy var leftDimmedBackground: CALayer = makeLeftDimmedBackground()
-    private lazy var timeline: TimelineView = makeTimeline()
+    private lazy var timeline: VideoTimelineView = makeVideoTimeline()
 
     // MARK: Init
 
@@ -243,8 +243,8 @@ fileprivate extension TrimmingControlView {
         CATransaction.commit()
     }
 
-    func makeTimeline() -> TimelineView {
-        let view = TimelineView()
+    func makeVideoTimeline() -> VideoTimelineView {
+        let view = VideoTimelineView()
         return view
     }
 

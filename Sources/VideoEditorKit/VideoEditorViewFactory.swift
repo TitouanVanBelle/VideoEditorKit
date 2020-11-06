@@ -6,60 +6,36 @@
 //
 
 import VideoPlayer
-import VideoEditor
 
-public protocol VideoEditorViewFactoryProtocol {
-    func makeVideoEditorViewController() -> VideoEditorViewController
-}
-
-protocol InternalVideoEditorViewFactoryProtocol {
+protocol VideoEditorViewFactoryProtocol {
     func makeVideoPlayerController() -> VideoPlayerController
-    func makeVideoEditorControlsViewController() -> VideoEditorControlsViewController
-    func makeCroppingControlViewController() -> CroppingControlViewController
-    func makeVideoSpeedControlViewController() -> VideoSpeedControlViewController
-    func makeTrimmingControlViewController() -> TrimmingControlViewController
+    func makeVideoControlListController(store: VideoEditorStore) -> VideoControlListController
+    func makeCropVideoControlViewController() -> CropVideoControlViewController
+    func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController
+    func makeTrimVideoControlViewController() -> TrimVideoControlViewController
 }
 
-public final class VideoEditorViewFactory: VideoEditorViewFactoryProtocol, InternalVideoEditorViewFactoryProtocol {
-
-    // MARK: Private Properties
-
-    private var store: VideoEditorStore!
-    private let videoPlayerViewFactory = VideoPlayerViewFactory()
-
-    // MARK: Init
-
-    public init() {}
-
-    public func makeVideoEditorViewController() -> VideoEditorViewController {
-        let editor = VideoEditor()
-        let generator = VideoTimelineGenerator()
-        let store = VideoEditorStore(
-            editor: editor,
-            generator: generator
-        )
-
-        self.store = store
-        return VideoEditorViewController(store: store, viewFactory: self)
-    }
+final class VideoEditorViewFactory: VideoEditorViewFactoryProtocol {
 
     func makeVideoPlayerController() -> VideoPlayerController {
-        videoPlayerViewFactory.makeVideoPlayerController()
+        var theme = VideoPlayerController.Theme()
+        theme.backgroundStyle = .plain(.white)
+        return VideoPlayerController(capabilities: .none, theme: theme)
     }
 
-    func makeVideoEditorControlsViewController() ->VideoEditorControlsViewController {
-        VideoEditorControlsViewController(store: store, viewFactory: self)
+    func makeVideoControlListController(store: VideoEditorStore) -> VideoControlListController {
+        VideoControlListController(store: store, viewFactory: self)
     }
 
-    func makeCroppingControlViewController() -> CroppingControlViewController {
-        CroppingControlViewController(store: store)
+    func makeCropVideoControlViewController() -> CropVideoControlViewController {
+        CropVideoControlViewController()
     }
 
-    func makeVideoSpeedControlViewController() -> VideoSpeedControlViewController {
-        VideoSpeedControlViewController(store: store)
+    func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController {
+        SpeedVideoControlViewController()
     }
 
-    func makeTrimmingControlViewController() -> TrimmingControlViewController {
-        TrimmingControlViewController(store: store)
+    func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
+        TrimVideoControlViewController()
     }
 }

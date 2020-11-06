@@ -12,7 +12,7 @@ A Video Editor allowing the following types of edit:
 ```swift
 let videoEditorViewController = VideoEditorViewFactory().makeVideoEditorViewController()
 videoEditorViewController.delegate = self
-let url = Bundle.main.url(forResource: "Skate", withExtension: "mp4")!
+let url = Bundle.main.url(forResource: "Video1", withExtension: "mp4")!
 let asset = AVAsset(url: url)
 
 videoEditorViewController.load(asset: asset)

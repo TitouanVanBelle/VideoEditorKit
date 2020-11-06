@@ -22,36 +22,25 @@ final class ViewController: UIViewController {
 
     // MARK: Life Cycle
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
-        setupUI()
+        let navigationController = UINavigationController(rootViewController: videoEditorViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.navigationBar.barTintColor = .white
+        navigationController.navigationBar.shadowImage = UIImage()
 
-        let url = Bundle.main.url(forResource: "Skate", withExtension: "mp4")!
-        let asset = AVAsset(url: url)
-        videoEditorViewController.load(asset: asset)
+        present(navigationController, animated: true)
     }
 }
 
 // MARK: UI
 
 fileprivate extension ViewController {
-    func setupUI() {
-        setupView()
-        setupConstraints()
-    }
-
-    func setupView() {
-        add(videoEditorViewController)
-    }
-
-    func setupConstraints() {
-        videoEditorViewController.view.autoPinEdgesToSuperviewEdges()
-    }
-
     func makeVideoEditorViewController() -> VideoEditorViewController {
-        let factory = VideoEditorViewFactory()
-        return factory.makeVideoEditorViewController()
+        let url = Bundle.main.url(forResource: "HongKong", withExtension: "mp4")!
+        let asset = AVAsset(url: url)
+        return VideoEditorViewController(asset: asset)
     }
 }
 
