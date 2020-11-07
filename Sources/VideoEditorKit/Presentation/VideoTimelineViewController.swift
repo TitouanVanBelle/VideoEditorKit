@@ -5,6 +5,7 @@
 //  Created by Titouan Van Belle on 26.10.20.
 //
 
+import AVFoundation
 import Combine
 import PureLayout
 import UIKit
@@ -46,9 +47,13 @@ final class VideoTimelineViewController: UIViewController {
 
         let horizontal = view.bounds.width / 2
         scrollView.contentInset = UIEdgeInsets(top: 0, left: horizontal, bottom: 0, right: horizontal)
+    }
+}
 
+extension VideoTimelineViewController {
+    func generateTimeline(for asset: AVAsset) {
         let rect = CGRect(x: 0, y: 0, width: view.bounds.width, height: 64.0)
-        store.videoTimeline(for: rect)
+        store.videoTimeline(for: asset, in: rect)
             .replaceError(with: [])
             .receive(on: DispatchQueue.main)
             .sink { [weak self] images in
@@ -83,22 +88,17 @@ fileprivate extension VideoTimelineViewController {
     }
 
     func updateVideoTimeline(with images: [CGImage], assetAspectRatio: CGFloat) {
-        guard !videoTimelineView.isConfigured else { return }
         guard !images.isEmpty else { return }
 
         videoTimelineView.configure(with: images, assetAspectRatio: assetAspectRatio)
+
+        updateScrollViewContentOffset(fractionCompleted: .zero)
     }
 
     func updateScrollViewContentOffset(fractionCompleted: Double) {
         let x = scrollView.contentSize.width * CGFloat(fractionCompleted) - (scrollView.contentSize.width / 2)
         let point = CGPoint(x: x, y: 0)
         scrollView.setContentOffset(point, animated: false)
-    }
-}
-
-extension VideoTimelineViewController {
-    func configure(with frames: [CGImage], assetAspectRatio: CGFloat) {
-        videoTimelineView.configure(with: frames, assetAspectRatio: assetAspectRatio)
     }
 }
 

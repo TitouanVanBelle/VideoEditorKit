@@ -80,7 +80,8 @@ fileprivate extension VideoEditorViewController {
         store.$editedPlayerItem
             .sink { [weak self] item in
                 guard let self = self else { return }
-                self.videoPlayerController.load(item: item, autoPlay: true)
+                self.videoPlayerController.load(item: item, autoPlay: false)
+                self.videoTimelineViewController.generateTimeline(for: item.asset)
             }
             .store(in: &cancellables)
 
@@ -117,6 +118,27 @@ fileprivate extension VideoEditorViewController {
             .sink { [weak self] videoControl in
                 guard let self = self else { return }
                 self.presentVideoControlController(for: videoControl)
+            }
+            .store(in: &cancellables)
+
+        videoControlViewController.$speed
+            .dropFirst(1)
+            .assign(to: \.speed, weakly: store)
+            .store(in: &cancellables)
+
+        videoControlViewController.$trimPositions
+            .dropFirst(1)
+            .assign(to: \.trimPositions, weakly: store)
+            .store(in: &cancellables)
+
+        videoControlViewController.$croppingPreset
+            .dropFirst(1)
+            .assign(to: \.croppingPreset, weakly: store)
+            .store(in: &cancellables)
+
+        videoControlViewController.onDismiss
+            .sink { [unowned self] _ in
+                self.animateVideoControlViewControllerOut()
             }
             .store(in: &cancellables)
     }
@@ -224,6 +246,7 @@ fileprivate extension VideoEditorViewController {
         label.textAlignment = .center
         label.text = "0:00 | 0:00"
         label.font = .systemFont(ofSize: 13.0)
+        label.textColor = .foreground
         return label
     }
 
@@ -262,21 +285,11 @@ fileprivate extension VideoEditorViewController {
     }
 
     func makeVideoControlViewController() -> VideoControlViewController {
-        let controller = VideoControlViewController(asset: store.originalAsset)
-
-        controller.$speed
-            .assign(to: \.speed, weakly: store)
-            .store(in: &cancellables)
-
-        controller.$trimPositions
-            .assign(to: \.trimPositions, weakly: store)
-            .store(in: &cancellables)
-
-        controller.onDismiss
-            .sink { [unowned self] _ in
-                self.animateVideoControlViewControllerOut()
-            }
-            .store(in: &cancellables)
+        let controller = VideoControlViewController(
+            asset: store.originalAsset,
+            speed: store.speed,
+            trimPositions: store.trimPositions
+        )
 
         return controller
     }

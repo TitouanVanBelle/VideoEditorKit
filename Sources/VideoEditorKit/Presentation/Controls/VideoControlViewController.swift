@@ -9,13 +9,15 @@ import AVFoundation
 import Combine
 import PureLayout
 import UIKit
+import VideoEditor
 
 final class VideoControlViewController: UIViewController {
 
     // MARK: Public Properties
 
-    @Published var speed: Double = .zero
-    @Published var trimPositions: (Double, Double) = (0.0, 1.0)
+    @Published var speed: Double
+    @Published var trimPositions: (Double, Double)
+    @Published var croppingPreset: CroppingPreset?
 
     @Published var onDismiss = PassthroughSubject<Void, Never>()
 
@@ -40,8 +42,10 @@ final class VideoControlViewController: UIViewController {
 
     // MARK: Init
 
-    init(asset: AVAsset) {
+    init(asset: AVAsset, speed: Double, trimPositions: (Double, Double)) {
         self.asset = asset
+        self.speed = speed
+        self.trimPositions = trimPositions
 
         super.init(nibName: nil, bundle: nil)
 
@@ -59,11 +63,17 @@ final class VideoControlViewController: UIViewController {
 fileprivate extension VideoControlViewController {
     func setupBindings() {
         speedVideoControlViewController.$speed
+            .dropFirst(1)
             .assign(to: \.speed, weakly: self)
             .store(in: &cancellables)
 
         trimVideoControlViewController.$trimPositions
+            .dropFirst(1)
             .assign(to: \.trimPositions, weakly: self)
+            .store(in: &cancellables)
+
+        cropVideoControlViewController.didSelectCroppingPreset
+            .assign(to: \.croppingPreset, weakly: self)
             .store(in: &cancellables)
     }
 }
@@ -141,11 +151,11 @@ fileprivate extension VideoControlViewController {
     }
 
     func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController {
-        SpeedVideoControlViewController()
+        SpeedVideoControlViewController(speed: speed)
     }
 
     func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
-        TrimVideoControlViewController(asset: asset)
+        TrimVideoControlViewController(asset: asset, trimPositions: trimPositions)
     }
 
     func makeCropVideoControlViewController() -> CropVideoControlViewController {
@@ -153,7 +163,7 @@ fileprivate extension VideoControlViewController {
     }
 
     func makeAudioVideoControlViewController() -> SpeedVideoControlViewController {
-        SpeedVideoControlViewController()
+        SpeedVideoControlViewController(speed: speed)
     }
 
     func makeTitleStackView() -> UIStackView {

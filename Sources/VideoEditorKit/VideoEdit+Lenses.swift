@@ -31,6 +31,17 @@ extension VideoEdit {
             return edit
         }
     )
+
+    static let croppingPresetLens = Lens<VideoEdit, CroppingPreset?>(
+        from: { $0.croppingPreset },
+        to: { croppingPreset, previousEdit in
+            var edit = VideoEdit()
+            edit.croppingPreset = croppingPreset
+            edit.speedRate = previousEdit.speedRate
+            edit.trimPositions = previousEdit.trimPositions
+            return edit
+        }
+    )
 }
 
 

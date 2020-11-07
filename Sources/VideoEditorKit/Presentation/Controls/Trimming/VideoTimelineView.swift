@@ -9,10 +9,6 @@ import UIKit
 
 final class VideoTimelineView: UIView {
 
-    // MARK: Public Properties
-
-    public var isConfigured: Bool = false
-
     // MARK: Init
 
     init() {
@@ -30,6 +26,8 @@ final class VideoTimelineView: UIView {
 
 extension VideoTimelineView {
     func configure(with frames: [CGImage], assetAspectRatio: CGFloat) {
+        subviews.forEach { $0.removeFromSuperview() }
+        
         let width = bounds.height * assetAspectRatio
 
         frames.enumerated().forEach {
@@ -49,8 +47,6 @@ extension VideoTimelineView {
                 imageView.autoPinEdge(.left, to: .right, of: previousImageView)
             }
         }
-
-        isConfigured = true
     }
 }
 

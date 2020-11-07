@@ -6,7 +6,7 @@
 //
 
 // TODO
-// - Display Values
+// - Round up before checking if haptic should be played
 
 import Combine
 import UIKit

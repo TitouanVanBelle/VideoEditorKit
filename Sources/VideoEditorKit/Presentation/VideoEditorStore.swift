@@ -13,7 +13,7 @@ import VideoEditor
 extension VideoEditResult {
     var item: AVPlayerItem {
         let item = AVPlayerItem(asset: asset)
-//        item.videoComposition = videoComposition
+        item.videoComposition = videoComposition
         return item
     }
 }
@@ -33,6 +33,7 @@ final class VideoEditorStore {
 
     @Published var speed: Double = 1.0
     @Published var trimPositions: (Double, Double) = (0.0, 1.0)
+    @Published var croppingPreset: CroppingPreset?
 
     @Published var videoEdit: VideoEdit
 
@@ -57,8 +58,7 @@ final class VideoEditorStore {
         var videoEdit = VideoEdit()
         videoEdit.speedRate = 1.0
 
-        let result = try! self.editor.apply(edit: videoEdit, to: asset)
-        self.editedPlayerItem = result.item
+        self.editedPlayerItem = AVPlayerItem(asset: asset)
         self.videoEdit = videoEdit
 
         setupBindings()
@@ -79,6 +79,7 @@ fileprivate extension VideoEditorStore {
             .store(in: &cancellables)
 
         $speed
+            .dropFirst(1)
             .filter { [weak self] speed in
                 guard let self = self else { return false }
                 return speed != self.videoEdit.speedRate
@@ -91,6 +92,7 @@ fileprivate extension VideoEditorStore {
             .store(in: &cancellables)
 
         $trimPositions
+            .dropFirst(1)
             .compactMap { [weak self] trimPositions in
                 guard let self = self else { return nil }
                 let startTime = CMTime(
@@ -102,12 +104,25 @@ fileprivate extension VideoEditorStore {
                     preferredTimescale: self.originalDuration.timescale
                 )
                 let positions = (startTime, endTime)
-                print("New trim positions: \(positions.0.seconds) / \(positions.1.seconds)")
 
                 return VideoEdit.trimPositionsLens.to(positions, self.videoEdit)
             }
             .assign(to: \.videoEdit, weakly: self)
             .store(in: &cancellables)
+
+        $croppingPreset
+            .dropFirst(1)
+            .filter { [weak self] croppingPreset in
+                guard let self = self else { return false }
+                return croppingPreset != self.videoEdit.croppingPreset
+            }
+            .compactMap { [weak self] croppingPreset in
+                guard let self = self else { return nil }
+                return VideoEdit.croppingPresetLens.to(croppingPreset, self.videoEdit)
+            }
+            .assign(to: \.videoEdit, weakly: self)
+            .store(in: &cancellables)
+
     }
 }
 
@@ -142,8 +157,8 @@ extension VideoEditorStore {
         return playheadProgress.seconds / duration.seconds
     }
     
-    func videoTimeline(for bounds: CGRect) -> AnyPublisher<[CGImage], Error> {
-        generator.generateTimeline(for: originalAsset, within: bounds, count: numberOfFrames(within: bounds))
+    func videoTimeline(for asset: AVAsset, in bounds: CGRect) -> AnyPublisher<[CGImage], Error> {
+        generator.videoTimeline(for: asset, in: bounds, numberOfFrames: numberOfFrames(within: bounds))
     }
 }
 

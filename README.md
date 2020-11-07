@@ -31,5 +31,4 @@ func save(editedAsset: AVAsset) {
 ## TODO
 
 - Fix Cropping
-- Reintroduce video composition
-- Regenerate timeline after trimming
+- Fix Audio missing (probably in VideoEditor)

@@ -14,7 +14,7 @@ final class TrimVideoControlViewController: UIViewController {
 
     // MARK: Public Properties
 
-    @Published var trimPositions: (Double, Double) = (0.0, 1.0)
+    @Published var trimPositions: (Double, Double)
 
     override var tabBarItem: UITabBarItem! {
         get {
@@ -38,8 +38,9 @@ final class TrimVideoControlViewController: UIViewController {
 
     // MARK: Init
 
-    init(asset: AVAsset, generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()) {
+    init(asset: AVAsset, trimPositions: (Double, Double), generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()) {
         self.asset = asset
+        self.trimPositions = trimPositions
         self.generator = generator
 
         super.init(nibName: nil, bundle: nil)
@@ -70,7 +71,7 @@ final class TrimVideoControlViewController: UIViewController {
         let frameWidth = bounds.height * ratio
         let count = Int(bounds.width / frameWidth) + 1
 
-        generator.generateTimeline(for: asset, within: trimmingControlView.bounds, count: count)
+        generator.videoTimeline(for: asset, in: trimmingControlView.bounds, numberOfFrames: count)
             .replaceError(with: [])
             .receive(on: DispatchQueue.main)
             .sink { [weak self] images in
@@ -85,47 +86,10 @@ final class TrimVideoControlViewController: UIViewController {
 
 fileprivate extension TrimVideoControlViewController {
     func setupBindings() {
-//        store.$state.sink { [weak self] state in
-//            guard let self = self else { return }
-//
-//            self.updateView(with: state.timeline, aspectRatio: state.aspectRatio)
-//
-//        }.store(in: &cancellables)
-//
         trimmingControlView.$trimPositions
+            .dropFirst(1)
             .assign(to: \.trimPositions, weakly: self)
             .store(in: &cancellables)
-
-//
-//        trimmingControlView.$seekerValue
-//            .sink { [weak self] seekerPosition in
-//                guard let self = self else { return }
-//                guard self.trimmingControlView.isSeeking else { return }
-//
-//                let progress = Double(seekerPosition)
-//                self.store.send(event: .seek(progress))
-//            }
-//            .store(in: &cancellables)
-//
-//        trimmingControlView.$isSeeking
-//            .sink { [weak self] isSeeking in
-//                guard let self = self else { return }
-//
-//                if !isSeeking {
-//                    self.store.send(event: .stopSeeking)
-//                }
-//            }
-//            .store(in: &cancellables)
-//
-//        trimmingControlView.$isTrimming
-//            .sink { [weak self] isTrimming in
-//                guard let self = self else { return }
-//
-//                if !isTrimming && self.store.state.isTrimming {
-//                    self.store.send(event: .stopTrimming)
-//                }
-//            }
-//            .store(in: &cancellables)
     }
 
     func updateVideoTimeline(with images: [CGImage], assetAspectRatio: CGFloat) {
@@ -158,7 +122,6 @@ fileprivate extension TrimVideoControlViewController {
     }
 
     func makeTrimmingControlView() -> TrimmingControlView {
-        let view = TrimmingControlView()
-        return view
+        TrimmingControlView(trimPositions: trimPositions)
     }
 }

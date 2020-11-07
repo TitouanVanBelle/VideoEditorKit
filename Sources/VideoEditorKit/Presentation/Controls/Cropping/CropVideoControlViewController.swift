@@ -5,6 +5,7 @@
 //  Created by Titouan Van Belle on 14.09.20.
 //
 
+import Combine
 import UIKit
 import VideoEditor
 
@@ -19,6 +20,8 @@ final class CropVideoControlViewController: UIViewController {
     typealias Datasource = UICollectionViewDiffableDataSource<Section, CroppingPresetCellViewModel>
 
     // MARK: Public Properties
+
+    var didSelectCroppingPreset = PassthroughSubject<CroppingPreset?, Never>()
 
     override var tabBarItem: UITabBarItem! {
         get {
@@ -131,13 +134,31 @@ extension CropVideoControlViewController: UICollectionViewDelegateFlowLayout {
         CGSize(width: 90, height: 100)
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? CroppingPresetCell {
-            cell.isSelected.toggle()
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? CroppingPresetCell else {
+            return false
         }
 
-        if let viewModel = datasource.itemIdentifier(for: indexPath) {
-//            store.send(event: .updateCroppingPreset(viewModel.croppingPreset))
+        if cell.isSelected {
+            collectionView.deselectItem(at: indexPath, animated: false)
+            didSelectCroppingPreset.send(nil)
+            return false
+        } else {
+            return true
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? CroppingPresetCell else {
+            return
+        }
+
+        guard let viewModel = datasource.itemIdentifier(for: indexPath) else {
+            return
+        }
+
+        if cell.isSelected {
+            didSelectCroppingPreset.send(viewModel.croppingPreset)
         }
     }
 }

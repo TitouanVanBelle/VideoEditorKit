@@ -13,7 +13,7 @@ final class SpeedVideoControlViewController: UIViewController {
 
     // MARK: Public Properties
 
-    @Published var speed: Double = 1.0
+    @Published var speed: Double
 
     @Published var isUpdating: Bool = false
 
@@ -36,7 +36,9 @@ final class SpeedVideoControlViewController: UIViewController {
 
     // MARK: Init
 
-    init() {
+    init(speed: Double) {
+        self.speed = speed
+        
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -89,7 +91,7 @@ fileprivate extension SpeedVideoControlViewController {
 
     func makeSlider() -> Slider {
         let slider = Slider()
-        slider.value = 1.0
+        slider.value = speed
         slider.range = .stepped(values: [0.25, 0.5, 0.75, 1.0, 2.0, 5.0, 10.0])
         slider.isContinuous = false
 

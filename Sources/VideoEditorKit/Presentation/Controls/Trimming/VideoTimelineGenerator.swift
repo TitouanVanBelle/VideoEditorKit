@@ -10,19 +10,17 @@ import Combine
 import Foundation
 
 protocol VideoTimelineGeneratorProtocol {
-    func generateTimeline(for asset: AVAsset, within bounds: CGRect, count: Int) -> AnyPublisher<[CGImage], Error>
+    func videoTimeline(for asset: AVAsset, in bounds: CGRect, numberOfFrames: Int) -> AnyPublisher<[CGImage], Error>
 }
 
 final class VideoTimelineGenerator: VideoTimelineGeneratorProtocol {
 
-    init() {}
+    func videoTimeline(for asset: AVAsset, in bounds: CGRect, numberOfFrames: Int) -> AnyPublisher<[CGImage], Error> {
+        Future { promise in
 
-    func generateTimeline(for asset: AVAsset, within bounds: CGRect, count: Int) -> AnyPublisher<[CGImage], Error> {
-        let generator = AVAssetImageGenerator(asset: asset)
-        var images = [CGImage]()
-        return Future { promise in
-
-            let times = self.getTimesOfThumnails(for: asset, count: count)
+            let generator = AVAssetImageGenerator(asset: asset)
+            var images = [CGImage]()
+            let times = self.frameTimes(for: asset, numberOfFrames: numberOfFrames)
 
             generator.appliesPreferredTrackTransform = true
             generator.maximumSize = .zero // TODO
@@ -32,7 +30,7 @@ final class VideoTimelineGenerator: VideoTimelineGeneratorProtocol {
                     promise(.failure(error))
                 } else if let cgImage = cgImage {
                     images.append(cgImage)
-                    if images.count == count {
+                    if images.count == numberOfFrames {
                         promise(.success(images))
                     }
                 } else {
@@ -45,16 +43,15 @@ final class VideoTimelineGenerator: VideoTimelineGeneratorProtocol {
 }
 
 fileprivate extension VideoTimelineGenerator {
-    func getTimesOfThumnails(for asset: AVAsset, count: Int) -> [NSValue] {
-        let timeIncrement = (asset.duration.seconds * 1000) / Double(count)
-        var timesForThumbnails = [NSValue]()
+    func frameTimes(for asset: AVAsset, numberOfFrames: Int) -> [NSValue] {
+        let timeIncrement = (asset.duration.seconds * 1000) / Double(numberOfFrames)
+        var timesForThumbnails = [CMTime]()
 
-        for index in 0..<count {
+        for index in 0..<numberOfFrames {
             let cmTime = CMTime(value: Int64(timeIncrement * Float64(index)), timescale: 1000)
-            let nsValue = NSValue(time: cmTime)
-            timesForThumbnails.append(nsValue)
+            timesForThumbnails.append(cmTime)
         }
 
-        return timesForThumbnails
+        return timesForThumbnails.map(NSValue.init)
     }
 }

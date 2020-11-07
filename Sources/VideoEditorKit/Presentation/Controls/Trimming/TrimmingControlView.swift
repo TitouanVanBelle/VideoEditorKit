@@ -15,7 +15,7 @@ public class TrimmingControlView: UIControl {
 
     @Published var isTrimming: Bool = false
 
-    @Published public var trimPositions: (Double, Double) = (0.0, 1.0)
+    @Published public var trimPositions: (Double, Double)
 
     public override var bounds: CGRect {
         didSet {
@@ -28,13 +28,13 @@ public class TrimmingControlView: UIControl {
 
     // MARK: Private Properties
 
-    private var internalLeftTrimValue: CGFloat = 0.0 {
+    private var internalLeftTrimValue: CGFloat {
         didSet {
             updateLeftHandleFrame()
         }
     }
 
-    public var internalRightTrimValue: CGFloat = 1.0 {
+    public var internalRightTrimValue: CGFloat {
         didSet {
             updateRightHandleFrame()
         }
@@ -61,7 +61,11 @@ public class TrimmingControlView: UIControl {
 
     // MARK: Init
 
-    init() {
+    init(trimPositions: (Double, Double)) {
+        self.trimPositions = trimPositions
+        internalLeftTrimValue = CGFloat(trimPositions.0)
+        internalRightTrimValue = CGFloat(trimPositions.1)
+        
         super.init(frame: .zero)
     }
 
