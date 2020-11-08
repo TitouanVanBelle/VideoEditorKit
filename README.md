@@ -4,7 +4,7 @@ A video editor kit allowing the following types of edit:
 
 <br/>
 <p align="center">
-  <img src="https://i.postimg.cc/8zyjzGLn/Video-Editor-Kit.png" width="814" height="542">
+  <img src="https://i.postimg.cc/8zyjzGLn/Video-Editor-Kit.png" width="400" height="542">
 </p>
 <br/>
 
