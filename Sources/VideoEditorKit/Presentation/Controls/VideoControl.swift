@@ -11,5 +11,4 @@ enum VideoControl: CaseIterable {
     case speed
     case trim
     case crop
-    case audio
 }

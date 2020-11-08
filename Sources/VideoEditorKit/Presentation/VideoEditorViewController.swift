@@ -12,15 +12,7 @@ import UIKit
 import VideoEditor
 import VideoPlayer
 
-public protocol VideoEditorViewControllerDelegate: class {
-    func save(editedAsset: AVAsset)
-}
-
 public final class VideoEditorViewController: UIViewController {
-
-    // MARK: Public Properties
-
-    public weak var delegate: VideoEditorViewControllerDelegate?
 
     // MARK: Private Properties
 
@@ -45,8 +37,8 @@ public final class VideoEditorViewController: UIViewController {
 
     // MARK: Init
 
-    public init(asset: AVAsset) {
-        self.store = VideoEditorStore(asset: asset)
+    public init(asset: AVAsset, outputUrl: URL) {
+        self.store = VideoEditorStore(asset: asset, outputUrl: outputUrl)
         self.viewFactory = VideoEditorViewFactory()
 
         super.init(nibName: nil, bundle: nil)
@@ -277,7 +269,7 @@ fileprivate extension VideoEditorViewController {
     }
 
     func makeVideoTimelineViewController() -> VideoTimelineViewController {
-        VideoTimelineViewController(store: store)
+        viewFactory.makeVideoTimelineViewController(store: store)
     }
 
     func makeVideoControlListControllers() -> VideoControlListController {
@@ -285,13 +277,11 @@ fileprivate extension VideoEditorViewController {
     }
 
     func makeVideoControlViewController() -> VideoControlViewController {
-        let controller = VideoControlViewController(
+        viewFactory.makeVideoControlViewController(
             asset: store.originalAsset,
             speed: store.speed,
             trimPositions: store.trimPositions
         )
-
-        return controller
     }
 
     func presentVideoControlController(for videoControl: VideoControl) {
@@ -345,7 +335,7 @@ fileprivate extension VideoEditorViewController {
     }
 
     @objc func save() {
-
+        store.export()
     }
 
     @objc func cancel() {

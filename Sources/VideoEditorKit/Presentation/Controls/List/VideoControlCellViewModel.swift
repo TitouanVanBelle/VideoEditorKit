@@ -25,8 +25,6 @@ final class VideoControlCellViewModel: NSObject {
             return "Trim"
         case .crop:
             return "Crop"
-        case .audio:
-            return "Audio"
         }
     }
 

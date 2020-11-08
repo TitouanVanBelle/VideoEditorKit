@@ -43,17 +43,23 @@ final class VideoEditorStore {
 
     private let editor: VideoEditor
     private let generator: VideoTimelineGeneratorProtocol
+    private let exporter: VideoExporterProtocol
+    private let outputUrl: URL
 
     // MARK: Init
 
     init(
         asset: AVAsset,
+        outputUrl: URL,
         editor: VideoEditor = .init(),
-        generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()
+        generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator(),
+        exporter: VideoExporterProtocol = VideoExporter()
     ) {
         self.originalAsset = asset
+        self.outputUrl = outputUrl
         self.editor = editor
         self.generator = generator
+        self.exporter = exporter
 
         var videoEdit = VideoEdit()
         videoEdit.speedRate = 1.0
@@ -126,6 +132,8 @@ fileprivate extension VideoEditorStore {
     }
 }
 
+// MARK: Public Accessors
+
 extension VideoEditorStore {
     var currentSeekingTime: CMTime {
         CMTime(seconds: duration.seconds * currentSeekingValue, preferredTimescale: duration.timescale)
@@ -160,7 +168,18 @@ extension VideoEditorStore {
     func videoTimeline(for asset: AVAsset, in bounds: CGRect) -> AnyPublisher<[CGImage], Error> {
         generator.videoTimeline(for: asset, in: bounds, numberOfFrames: numberOfFrames(within: bounds))
     }
+
+    func export() {
+        print(editedPlayerItem.asset.duration.seconds)
+        exporter.export(
+            asset: editedPlayerItem.asset,
+            to: outputUrl,
+            videoComposition: editedPlayerItem.videoComposition
+        )
+    }
 }
+
+// MARK: Private Accessors
 
 fileprivate extension VideoEditorStore {
     func numberOfFrames(within bounds: CGRect) -> Int {

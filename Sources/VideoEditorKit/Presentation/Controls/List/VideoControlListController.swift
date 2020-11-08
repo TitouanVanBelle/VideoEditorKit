@@ -81,7 +81,10 @@ fileprivate extension VideoControlListController {
     }
 
     func setupConstraints() {
-        collectionView.autoPinEdgesToSuperviewEdges()
+        collectionView.autoPinEdge(toSuperviewEdge: .top)
+        collectionView.autoPinEdge(toSuperviewEdge: .bottom)
+        collectionView.autoAlignAxis(toSuperviewAxis: .vertical)
+        collectionView.autoSetDimension(.width, toSize: 270)
     }
 
     func setupCollectionView() {
@@ -111,6 +114,7 @@ fileprivate extension VideoControlListController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = .clear
         view.showsHorizontalScrollIndicator = false
+        view.isScrollEnabled = false
         return view
     }
 }

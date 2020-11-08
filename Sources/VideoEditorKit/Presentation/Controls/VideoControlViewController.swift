@@ -39,13 +39,15 @@ final class VideoControlViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     private let asset: AVAsset
+    private let viewFactory: VideoEditorViewFactoryProtocol
 
     // MARK: Init
 
-    init(asset: AVAsset, speed: Double, trimPositions: (Double, Double)) {
+    init(asset: AVAsset, speed: Double, trimPositions: (Double, Double), viewFactory: VideoEditorViewFactoryProtocol) {
         self.asset = asset
         self.speed = speed
         self.trimPositions = trimPositions
+        self.viewFactory = viewFactory
 
         super.init(nibName: nil, bundle: nil)
 
@@ -139,8 +141,6 @@ fileprivate extension VideoControlViewController {
 
     func videoControlViewController(for videoControl: VideoControl) -> UIViewController {
         switch videoControl {
-        case .audio:
-            return speedVideoControlViewController
         case .crop:
             return cropVideoControlViewController
         case .speed:
@@ -151,19 +151,15 @@ fileprivate extension VideoControlViewController {
     }
 
     func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController {
-        SpeedVideoControlViewController(speed: speed)
+        viewFactory.makeSpeedVideoControlViewController(speed: speed)
     }
 
     func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
-        TrimVideoControlViewController(asset: asset, trimPositions: trimPositions)
+        viewFactory.makeTrimVideoControlViewController(asset: asset, trimPositions: trimPositions)
     }
 
     func makeCropVideoControlViewController() -> CropVideoControlViewController {
-        CropVideoControlViewController()
-    }
-
-    func makeAudioVideoControlViewController() -> SpeedVideoControlViewController {
-        SpeedVideoControlViewController(speed: speed)
+        viewFactory.makeCropVideoControlViewController()
     }
 
     func makeTitleStackView() -> UIStackView {

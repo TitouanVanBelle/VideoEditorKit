@@ -40,7 +40,16 @@ fileprivate extension ViewController {
     func makeVideoEditorViewController() -> VideoEditorViewController {
         let url = Bundle.main.url(forResource: "HongKong", withExtension: "mp4")!
         let asset = AVAsset(url: url)
-        return VideoEditorViewController(asset: asset)
+
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let documentsDirectory = paths[0]
+        let outputUrl = documentsDirectory.appendingPathComponent("video.mov")
+
+        try? FileManager.default.removeItem(atPath: outputUrl.path)
+
+        print(outputUrl)
+
+        return VideoEditorViewController(asset: asset, outputUrl: outputUrl)
     }
 }
 

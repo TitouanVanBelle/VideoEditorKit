@@ -5,14 +5,21 @@
 //  Created by Titouan Van Belle on 11.09.20.
 //
 
+import AVFoundation
 import VideoPlayer
 
 protocol VideoEditorViewFactoryProtocol {
     func makeVideoPlayerController() -> VideoPlayerController
+    func makeVideoTimelineViewController(store: VideoEditorStore) -> VideoTimelineViewController
     func makeVideoControlListController(store: VideoEditorStore) -> VideoControlListController
+    func makeVideoControlViewController(
+        asset: AVAsset,
+        speed: Double,
+        trimPositions: (Double, Double)
+    ) -> VideoControlViewController
     func makeCropVideoControlViewController() -> CropVideoControlViewController
-//    func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController
-//    func makeTrimVideoControlViewController() -> TrimVideoControlViewController
+    func makeSpeedVideoControlViewController(speed: Double) -> SpeedVideoControlViewController
+    func makeTrimVideoControlViewController(asset: AVAsset, trimPositions: (Double, Double)) -> TrimVideoControlViewController
 }
 
 final class VideoEditorViewFactory: VideoEditorViewFactoryProtocol {
@@ -23,19 +30,38 @@ final class VideoEditorViewFactory: VideoEditorViewFactoryProtocol {
         return VideoPlayerController(capabilities: .none, theme: theme)
     }
 
+    func makeVideoTimelineViewController(store: VideoEditorStore) -> VideoTimelineViewController {
+        VideoTimelineViewController(store: store)
+    }
+
     func makeVideoControlListController(store: VideoEditorStore) -> VideoControlListController {
         VideoControlListController(store: store, viewFactory: self)
+    }
+
+    func makeVideoControlViewController(
+        asset: AVAsset,
+        speed: Double,
+        trimPositions: (Double, Double)
+    ) -> VideoControlViewController {
+        let controller = VideoControlViewController(
+            asset: asset,
+            speed: speed,
+            trimPositions: trimPositions,
+            viewFactory: self
+        )
+
+        return controller
     }
 
     func makeCropVideoControlViewController() -> CropVideoControlViewController {
         CropVideoControlViewController()
     }
 
-//    func makeSpeedVideoControlViewController() -> SpeedVideoControlViewController {
-//        SpeedVideoControlViewController()
-//    }
+    func makeSpeedVideoControlViewController(speed: Double) -> SpeedVideoControlViewController {
+        SpeedVideoControlViewController(speed: speed)
+    }
 
-//    func makeTrimVideoControlViewController() -> TrimVideoControlViewController {
-//        TrimVideoControlViewController()
-//    }
+    func makeTrimVideoControlViewController(asset: AVAsset, trimPositions: (Double, Double)) -> TrimVideoControlViewController {
+        TrimVideoControlViewController(asset: asset, trimPositions: trimPositions)
+    }
 }
