@@ -1,6 +1,6 @@
 # VideoEditorKit
 
-A video editor kit allowing the following types of edit:
+A video editor kit
 
 <br/>
 <p align="center">
