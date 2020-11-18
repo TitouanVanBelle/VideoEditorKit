@@ -17,11 +17,11 @@ final class ViewController: UIViewController {
 
     // MARK: Private Properties
 
+    private var videoEdit: VideoEdit?
     private lazy var asset: AVAsset = makeAsset()
     private lazy var originalVideoPlayer: AVPlayerViewController = makeOriginalVideoPlayer()
     private lazy var editButton: UIButton = makeEditButton()
     private lazy var editedVideoPlayer: AVPlayerViewController = makeEditedVideoPlayer()
-    private lazy var videoEditorViewController: VideoEditorViewController = makeVideoEditorViewController()
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -92,10 +92,11 @@ fileprivate extension ViewController {
     }
 
     func makeVideoEditorViewController() -> VideoEditorViewController {
-        let controller = VideoEditorViewController(asset: asset)
+        let controller = VideoEditorViewController(asset: asset, videoEdit: videoEdit)
 
         controller.onEditCompleted
-            .sink { [weak self] editedPlayerItem in
+            .sink { [weak self] editedPlayerItem, videoEdit in
+                self?.videoEdit = videoEdit
                 self?.editedVideoPlayer.player?.replaceCurrentItem(with: editedPlayerItem)
             }
             .store(in: &cancellables)
@@ -111,6 +112,7 @@ fileprivate extension ViewController {
         originalVideoPlayer.player?.pause()
         editedVideoPlayer.player?.pause()
 
+        let videoEditorViewController = makeVideoEditorViewController()
         let navigationController = UINavigationController(rootViewController: videoEditorViewController)
         navigationController.modalPresentationStyle = .fullScreen
         navigationController.navigationBar.barTintColor = .white

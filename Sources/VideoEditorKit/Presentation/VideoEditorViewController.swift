@@ -16,7 +16,7 @@ public final class VideoEditorViewController: UIViewController {
 
     // MARK: Published Properties
 
-    public var onEditCompleted = PassthroughSubject<AVPlayerItem, Never>()
+    public var onEditCompleted = PassthroughSubject<(AVPlayerItem, VideoEdit), Never>()
 
     // MARK: Private Properties
 
@@ -41,8 +41,8 @@ public final class VideoEditorViewController: UIViewController {
 
     // MARK: Init
 
-    public init(asset: AVAsset) {
-        self.store = VideoEditorStore(asset: asset)
+    public init(asset: AVAsset, videoEdit: VideoEdit? = nil) {
+        self.store = VideoEditorStore(asset: asset, videoEdit: videoEdit)
         self.viewFactory = VideoEditorViewFactory()
 
         super.init(nibName: nil, bundle: nil)
@@ -340,7 +340,10 @@ fileprivate extension VideoEditorViewController {
     }
 
     @objc func save() {
-        onEditCompleted.send(store.editedPlayerItem)
+        let item = AVPlayerItem(asset: store.editedPlayerItem.asset)
+        item.videoComposition = store.editedPlayerItem.videoComposition
+
+        onEditCompleted.send((item, store.videoEdit))
         dismiss(animated: true)
     }
 

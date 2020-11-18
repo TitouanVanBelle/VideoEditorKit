@@ -48,18 +48,15 @@ final class VideoEditorStore {
 
     init(
         asset: AVAsset,
+        videoEdit: VideoEdit?,
         editor: VideoEditor = .init(),
         generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()
     ) {
         self.originalAsset = asset
         self.editor = editor
         self.generator = generator
-
-        var videoEdit = VideoEdit()
-        videoEdit.speedRate = 1.0
-
         self.editedPlayerItem = AVPlayerItem(asset: asset)
-        self.videoEdit = videoEdit
+        self.videoEdit = videoEdit ?? VideoEdit()
 
         setupBindings()
     }
