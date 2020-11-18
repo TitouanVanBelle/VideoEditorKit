@@ -223,7 +223,8 @@ fileprivate extension VideoEditorViewController {
     }
 
     func makeDismissButtonItem() -> UIBarButtonItem {
-        let image = UIImage(named: "Close", in: .module, compatibleWith: nil)
+        let imageName = isModal ? "Close" : "Back"
+        let image = UIImage(named: imageName, in: .module, compatibleWith: nil)
         let buttonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(cancel))
         buttonItem.tintColor = #colorLiteral(red: 0.1137254902, green: 0.1137254902, blue: 0.1215686275, alpha: 1)
         return buttonItem
@@ -361,7 +362,11 @@ fileprivate extension VideoEditorViewController {
             title: "Yes",
             style: .destructive,
             handler: { _ in
-                self.dismiss(animated: true)
+                if self.isModal {
+                    self.dismiss(animated: true)
+                } else {
+                    self.navigationController?.popViewController(animated: true)
+                }
             }
         )
         alert.addAction(dismissAction)
@@ -369,9 +374,7 @@ fileprivate extension VideoEditorViewController {
         let cancelAction = UIAlertAction(
             title: "No",
             style: .cancel,
-            handler: { _ in
-
-            }
+            handler: { _ in }
         )
         alert.addAction(cancelAction)
 
