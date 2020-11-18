@@ -27,6 +27,7 @@ let package = Package(
                 "VideoEditor",
                 "PureLayout"
             ],
+            exclude: ["Demo"],
             resources: [.process("Resources")])
     ]
 )

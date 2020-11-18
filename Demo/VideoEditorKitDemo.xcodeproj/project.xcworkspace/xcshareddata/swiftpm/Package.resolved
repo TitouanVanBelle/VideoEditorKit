@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/TitouanVanBelle/VideoEditor",
         "state": {
           "branch": "master",
-          "revision": "2ba609b7626394e190df1e9e3736c2cd0bc6df2e",
+          "revision": "a4c75d6f71797bfa6e441082bc2e063d37303c73",
           "version": null
         }
       },
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/TitouanVanBelle/VideoPlayer",
         "state": {
           "branch": "master",
-          "revision": "318bfb249f66ffc19ce6197e02eeb3dfabc665f2",
+          "revision": "0fbcdbed2504972a3feda51a9974f0c23df0262d",
           "version": null
         }
       }
