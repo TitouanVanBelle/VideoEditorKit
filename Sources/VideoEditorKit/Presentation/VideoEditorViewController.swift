@@ -59,6 +59,10 @@ public final class VideoEditorViewController: UIViewController {
 
         setupUI()
         setupBindings()
+
+        #if targetEnvironment(simulator)
+        print("Warning: Cropping only works on real device and has been disabled on simulator")
+        #endif
     }
 }
 
@@ -341,7 +345,10 @@ fileprivate extension VideoEditorViewController {
 
     @objc func save() {
         let item = AVPlayerItem(asset: store.editedPlayerItem.asset)
+
+        #if !targetEnvironment(simulator)
         item.videoComposition = store.editedPlayerItem.videoComposition
+        #endif
 
         onEditCompleted.send((item, store.videoEdit))
         dismiss(animated: true)

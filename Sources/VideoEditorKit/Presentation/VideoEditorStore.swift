@@ -13,7 +13,10 @@ import VideoEditor
 extension VideoEditResult {
     var item: AVPlayerItem {
         let item = AVPlayerItem(asset: asset)
+        #if !targetEnvironment(simulator)
         item.videoComposition = videoComposition
+        #endif
+
         return item
     }
 }
