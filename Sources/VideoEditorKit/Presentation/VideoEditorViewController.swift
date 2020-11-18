@@ -16,7 +16,7 @@ public final class VideoEditorViewController: UIViewController {
 
     // MARK: Published Properties
 
-    public var onEditCompleted = PassthroughSubject<Void, Never>()
+    public var onEditCompleted = PassthroughSubject<AVPlayerItem, Never>()
 
     // MARK: Private Properties
 
@@ -41,8 +41,8 @@ public final class VideoEditorViewController: UIViewController {
 
     // MARK: Init
 
-    public init(asset: AVAsset, outputUrl: URL) {
-        self.store = VideoEditorStore(asset: asset, outputUrl: outputUrl)
+    public init(asset: AVAsset) {
+        self.store = VideoEditorStore(asset: asset)
         self.viewFactory = VideoEditorViewFactory()
 
         super.init(nibName: nil, bundle: nil)
@@ -226,7 +226,8 @@ fileprivate extension VideoEditorViewController {
     }
 
     func makeVideoPlayerController() -> VideoPlayerController {
-        viewFactory.makeVideoPlayerController()
+        let controller = viewFactory.makeVideoPlayerController()
+        return controller
     }
 
     func makePlayButton() -> PlayPauseButton {
@@ -339,15 +340,8 @@ fileprivate extension VideoEditorViewController {
     }
 
     @objc func save() {
-        store.export()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] result in
-                self?.dismiss(animated: true)
-            } receiveValue: { [weak self] _ in
-                self?.onEditCompleted.send()
-            }
-            .store(in: &cancellables)
-
+        onEditCompleted.send(store.editedPlayerItem)
+        dismiss(animated: true)
     }
 
     @objc func cancel() {

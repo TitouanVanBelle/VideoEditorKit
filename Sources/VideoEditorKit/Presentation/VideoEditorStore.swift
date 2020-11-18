@@ -43,18 +43,15 @@ final class VideoEditorStore {
 
     private let editor: VideoEditor
     private let generator: VideoTimelineGeneratorProtocol
-    private let outputUrl: URL
 
     // MARK: Init
 
     init(
         asset: AVAsset,
-        outputUrl: URL,
         editor: VideoEditor = .init(),
         generator: VideoTimelineGeneratorProtocol = VideoTimelineGenerator()
     ) {
         self.originalAsset = asset
-        self.outputUrl = outputUrl
         self.editor = editor
         self.generator = generator
 
@@ -167,11 +164,9 @@ extension VideoEditorStore {
         generator.videoTimeline(for: asset, in: bounds, numberOfFrames: numberOfFrames(within: bounds))
     }
 
-    func export() -> AnyPublisher<Void, Error> {
-        editor.apply(edit: videoEdit, to: self.originalAsset)
-            .flatMap { result in
-                result.export(to: self.outputUrl)
-            }
+    func export(to url: URL) -> AnyPublisher<Void, Error> {
+        editor.apply(edit: videoEdit, to: originalAsset)
+            .flatMap { $0.export(to: url) }
             .eraseToAnyPublisher()
     }
 }

@@ -92,18 +92,11 @@ fileprivate extension ViewController {
     }
 
     func makeVideoEditorViewController() -> VideoEditorViewController {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        let documentsDirectory = paths[0]
-        let outputUrl = documentsDirectory.appendingPathComponent("video.mov")
-
-        try? FileManager.default.removeItem(atPath: outputUrl.path)
-
-        let controller = VideoEditorViewController(asset: asset, outputUrl: outputUrl)
+        let controller = VideoEditorViewController(asset: asset)
 
         controller.onEditCompleted
-            .sink { [weak self] _ in
-                let item = AVPlayerItem(url: outputUrl)
-                self?.editedVideoPlayer.player?.replaceCurrentItem(with: item)
+            .sink { [weak self] editedPlayerItem in
+                self?.editedVideoPlayer.player?.replaceCurrentItem(with: editedPlayerItem)
             }
             .store(in: &cancellables)
 
@@ -115,6 +108,9 @@ fileprivate extension ViewController {
 
 fileprivate extension ViewController {
     @objc func edit() {
+        originalVideoPlayer.player?.pause()
+        editedVideoPlayer.player?.pause()
+
         let navigationController = UINavigationController(rootViewController: videoEditorViewController)
         navigationController.modalPresentationStyle = .fullScreen
         navigationController.navigationBar.barTintColor = .white
