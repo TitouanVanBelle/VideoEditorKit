@@ -25,7 +25,11 @@ public final class VideoEditorViewController: UIViewController {
 
     private lazy var videoPlayerController: VideoPlayerController = makeVideoPlayerController()
     private lazy var playButton: PlayPauseButton = makePlayButton()
+
+    private lazy var timeStack: UIStackView = makeTimeStack()
+    private lazy var currentTimeLabel: UILabel = makeCurrentTimeLabel()
     private lazy var durationLabel: UILabel = makeDurationLabel()
+
     private lazy var fullscreenButton: UIButton = makeFullscreenButton()
     private lazy var controlsStack: UIStackView = makeControlsStack()
     private lazy var videoTimelineViewController: VideoTimelineViewController = makeVideoTimelineViewController()
@@ -35,6 +39,7 @@ public final class VideoEditorViewController: UIViewController {
     private var videoControlHeightConstraint: NSLayoutConstraint!
 
     private var cancellables = Set<AnyCancellable>()
+    private var durationUpdateCancellable: Cancellable?
 
     private let store: VideoEditorStore
     private let viewFactory: VideoEditorViewFactoryProtocol
@@ -69,11 +74,21 @@ public final class VideoEditorViewController: UIViewController {
 // MARK: Bindings
 
 fileprivate extension VideoEditorViewController {
+    func subscribeToDurationUpdate(for item: AVPlayerItem) {
+        durationUpdateCancellable?.cancel()
+        durationUpdateCancellable = item
+            .publisher(for: \.duration)
+            .sink { [weak self] playheadProgress in
+                guard let self = self else { return }
+                self.updateDurationLabel()
+            }
+    }
+
     func setupBindings() {
         store.$playheadProgress
             .sink { [weak self] playheadProgress in
                 guard let self = self else { return }
-                self.updateDurationLabel()
+                self.updateCurrentTimeLabel()
             }
             .store(in: &cancellables)
         
@@ -82,8 +97,11 @@ fileprivate extension VideoEditorViewController {
                 guard let self = self else { return }
                 self.videoPlayerController.load(item: item, autoPlay: false)
                 self.videoTimelineViewController.generateTimeline(for: item.asset)
+                self.subscribeToDurationUpdate(for: item)
             }
             .store(in: &cancellables)
+
+
 
         videoPlayerController.$currentTime
             .assign(to: \.playheadProgress, weakly: store)
@@ -201,18 +219,22 @@ fileprivate extension VideoEditorViewController {
     }
 
     func updateDurationLabel() {
-        let currentTimeInSeconds = videoPlayerController.currentTime.seconds
-        let formattedCurrentTime = currentTimeInSeconds >= 3600 ?
-            DateComponentsFormatter.longDurationFormatter.string(from: currentTimeInSeconds) ?? "" :
-            DateComponentsFormatter.shortDurationFormatter.string(from: currentTimeInSeconds) ?? ""
-
         var durationInSeconds = videoPlayerController.player.currentItem?.duration.seconds ?? 0.0
         durationInSeconds = durationInSeconds.isNaN ? 0.0 : durationInSeconds
         let formattedDuration = durationInSeconds >= 3600 ?
             DateComponentsFormatter.longDurationFormatter.string(from: durationInSeconds) ?? "" :
             DateComponentsFormatter.shortDurationFormatter.string(from: durationInSeconds) ?? ""
 
-        durationLabel.text = "\(formattedCurrentTime) | \(formattedDuration)"
+        durationLabel.text = formattedDuration
+    }
+
+    func updateCurrentTimeLabel() {
+        let currentTimeInSeconds = videoPlayerController.currentTime.seconds
+        let formattedCurrentTime = currentTimeInSeconds >= 3600 ?
+            DateComponentsFormatter.longDurationFormatter.string(from: currentTimeInSeconds) ?? "" :
+            DateComponentsFormatter.shortDurationFormatter.string(from: currentTimeInSeconds) ?? ""
+
+        currentTimeLabel.text = formattedCurrentTime
     }
 
     func makeSaveButtonItem() -> UIBarButtonItem {
@@ -243,10 +265,38 @@ fileprivate extension VideoEditorViewController {
         return button
     }
 
+    func makeTimeStack() -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: [
+            currentTimeLabel,
+            makeSeparatorLabel(),
+            durationLabel
+        ])
+
+        return stack
+    }
+
+    func makeSeparatorLabel() -> UILabel {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.text = " | "
+        label.font = .systemFont(ofSize: 13.0)
+        label.textColor = .foreground
+        return label
+    }
+
     func makeDurationLabel() -> UILabel {
         let label = UILabel()
         label.textAlignment = .center
-        label.text = "0:00 | 0:00"
+        label.text = "0:00"
+        label.font = .systemFont(ofSize: 13.0)
+        label.textColor = .foreground
+        return label
+    }
+
+    func makeCurrentTimeLabel() -> UILabel {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.text = "0:00"
         label.font = .systemFont(ofSize: 13.0)
         label.textColor = .foreground
         return label
@@ -265,7 +315,7 @@ fileprivate extension VideoEditorViewController {
     func makeControlsStack() -> UIStackView {
         let stack = UIStackView(arrangedSubviews: [
             playButton,
-            durationLabel,
+            timeStack,
             fullscreenButton
         ])
 

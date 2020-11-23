@@ -71,7 +71,7 @@ fileprivate extension VideoEditorStore {
     func setupBindings() {
         $videoEdit
             .setFailureType(to: Error.self)
-            .flatMap { [weak self] (edit: VideoEdit) -> AnyPublisher<VideoEditResult, Error> in
+            .flatMap { [weak self] edit -> AnyPublisher<VideoEditResult, Error> in
                 self!.editor.apply(edit: edit, to: self!.originalAsset)
             }
             .map(\.item)
