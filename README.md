@@ -57,6 +57,8 @@ controller.onEditCompleted
 ## TODO
 
 - Add Audio (mute) video control
+- Seek when trimming
+- Prevent trimming handler from going passed each other
 - Trim: Prevent trimming handle from going passed each other
 - Make dismiss button in Video Control bigger and higher
 - Dark Theme
